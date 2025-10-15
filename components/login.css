@@ -1,0 +1,142 @@
+/*输入口令弹窗*/
+.msg-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.msg-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.msg-modal {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 450px;
+    padding: 30px;
+    transform: translateY(-50px);
+    transition: transform 0.4s ease;
+}
+
+.msg-modal-overlay.active .msg-modal {
+    transform: translateY(0);
+}
+
+.msg-modal-header {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.msg-modal-header h2 {
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.msg-form {
+    position: relative;
+}
+
+.msg-form-group {
+    margin-bottom: 20px;
+    text-align: left;
+    position: relative;
+}
+
+.msg-modal label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+}
+
+.msg-modal input[type="text"],
+.msg-modal input[type="password"],
+.msg-modal select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.msg-modal input[type="text"]:focus,
+.msg-modal input[type="password"]:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.msg-modal button {
+    width: 100%;
+}
+
+.login-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-btn-primary {
+    background-color: #3a5ca2;
+    color: white;
+}
+
+.login-btn-primary:hover {
+    background-color: #3a5ce5;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 108, 247, 0.4);
+}
+
+.login-btn-secondary {
+    background-color: #ff758c;
+    color: white;
+}
+
+.login-btn-secondary:hover {
+    background-color: #ff3366;
+    transform: translateY(-2px);
+}
+
+.login-btn-cancel {
+    background-color: #B6CEB4;
+    color: white;
+}
+
+.login-btn-cancel:hover {
+    background-color: #96A78D;
+    transform: translateY(-2px);
+}
+
+.msg-form-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+.msg-error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: none;
+}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <link rel="icon" type="image/x-icon" href="imgs/favicon.png">
+    <link rel="stylesheet" href="gallery.css">
+    <link rel="stylesheet" href="components/login.css">
+    <link rel="stylesheet" href="components/loading.css">
+    <link rel="stylesheet" href="components/load-more.css">
+    <link rel="stylesheet" href="components/category.css">
+    <link rel="stylesheet" href="components/zoomIn.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+<header class="category-header">
+    <div class="categories-container">
+        <div class="entry-edit-btn">
+            <i class="fas fa-square-pen"></i>
+        </div>
+        <div class="categories entry-edit-container" id="categories">
+            <button class="category-btn active" data-category="all">
+                <i class="fas fa-th"></i> 全部
+            </button>
+            <button class="category-btn btn-color-pink" data-category="我们">
+                <i class="fas fa-user-friends"></i> 我们
+            </button>
+            <button class="category-btn btn-color-green" data-category="日常">
+                <i class="fas fa-bookmark"></i> 日常
+            </button>
+            <button class="category-btn btn-color-yellow" data-category="心情">
+                <i class="fas fa-face-laugh"></i> 心情
+            </button>
+            <button class="category-btn btn-color-orange" data-category="美食">
+                <i class="fas fa-utensils"></i> 美食
+            </button>
+            <button class="category-btn btn-color-blue" data-category="旅行">
+                <i class="fas fa-plane"></i> 旅行
+            </button>
+            <button class="category-btn btn-color-creme-yellow" data-category="心愿">
+                <i class="fas fa-star"></i> 心愿
+            </button>
+        </div>
+    </div>
+</header>
+<div class="masonry" id="waterfall">
+    <p style="text-align:center; margin-top: 5rem; font-size: 1.5rem">正在加载 ...</p>
+</div>
+
+<!-- 加载指示器 -->
+<div id="loadingIndicator" class="load-more-loading" style="display: none;">
+    <div class="load-more-spinner"></div>
+    正在加载更多内容...
+</div>
+
+<!-- 结束消息 -->
+<div id="endMessage" class="load-more-end-message" style="display: none;">
+    没有更多内容了
+</div>
+
+<!--登录信息弹窗-->
+<div class="msg-modal-overlay" id="modalOverlay">
+    <div class="msg-modal">
+        <div class="msg-modal-header">
+            <h2>权限信息</h2>
+        </div>
+        <form id="loginForm" class="msg-form">
+            <div class="msg-form-group">
+                <label for="cosId">ID</label>
+                <input type="text" id="cosId" name="cosId" placeholder="请输入ID" required>
+                <div class="msg-error-message" id="usernameError">ID不能为空</div>
+            </div>
+            <div class="msg-form-group">
+                <label for="cosToken">密钥</label>
+                <input type="password" id="cosToken" name="password" placeholder="请输入您的密钥" required>
+                <div class="msg-error-message" id="passwordError">密钥不能为空</div>
+            </div>
+
+            <div class="msg-form-group">
+                <label for="user">用户</label>
+                <select id="user">
+                    <option>
+                        娜宝
+                    </option>
+                    <option>
+                        温宝
+                    </option>
+                </select>
+            </div>
+            <div class="msg-form-footer">
+                <button type="button" class="login-btn login-btn-secondary" id="cancelBtn">取消</button>
+                <button type="submit" class="login-btn login-btn-cancel">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Loading遮罩层 -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="loading-spinner">
+            <div class="spinner-circle"></div>
+        </div>
+        <div class="loading-text">加载中，请稍候...</div>
+    </div>
+</div>
+
+<div class="zoom-in-modal" id="imageModal">
+    <img id="modalImage">
+</div>
+
+</body>
+
+<script src="https://aurora-1259397844.cos.ap-nanjing.myqcloud.com/asset/masonry.pkgd.min.js"></script>
+<script src="https://aurora-1259397844.cos.ap-nanjing.myqcloud.com/asset/imagesloaded.pkgd.min.js"></script>
+<script src="https://aurora-1259397844.cos.ap-nanjing.myqcloud.com/asset/pulltorefreshjs.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cos-js-sdk-v5/dist/cos-js-sdk-v5.min.js"></script>
+<script src="components/login.js"></script>
+<script src="components/cos.js"></script>
+<script src="components/loading.js"></script>
+<script src="components/load-more.js"></script>
+<script src="components/category.js"></script>
+<script src="gallery.js"></script>
+</html>

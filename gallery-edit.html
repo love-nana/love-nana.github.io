@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gallery Manage</title>
+    <link rel="icon" type="image/x-icon" href="imgs/favicon.png">
+    <link rel="stylesheet" href="gallery-edit.css">
+    <link rel="stylesheet" href="components/login.css">
+    <link rel="stylesheet" href="components/loading.css">
+    <link rel="stylesheet" href="components/notification.css">
+    <link rel="stylesheet" href="components/load-more.css">
+    <link rel="stylesheet" href="components/category.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/cos-js-sdk-v5/dist/cos-js-sdk-v5.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css"/>
+<body>
+<div class="container">
+    <div class="header-bg" id="header-bg">
+    </div>
+    <div class="actions">
+        <button class="fit-btn btn-secondary" id="addImageBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            添加我们的故事
+        </button>
+        <input type="file" id="fileInput" class="file-input" accept="image/jpeg,image/png,image/gif" multiple/>
+    </div>
+
+    <div class="drop-zone" id="dropZone">
+        <p>拖拽图片到这里上传，或点击上方"添加图片"按钮</p>
+    </div>
+
+    <!-- 上传预览区域 -->
+    <div class="upload-preview" id="uploadPreview">
+        <h3 class="preview-title">预览上传的图片</h3>
+        <div class="preview-list" id="previewList">
+            <!-- 预览图片将在这里显示 -->
+        </div>
+        <div class="upload-actions">
+            <button class="btn btn-cancel" id="cancelUpload">取消</button>
+            <button class="btn btn-secondary" id="confirmUpload">确认上传</button>
+        </div>
+    </div>
+
+    <!-- 分类   -->
+    <header class="category-header">
+        <div class="categories" id="categories">
+            <button class="category-btn active" data-category="all">
+                <i class="fas fa-th"></i> 全部
+            </button>
+            <button class="category-btn btn-color-pink" data-category="我们">
+                <i class="fas fa-user-friends"></i> 我们
+            </button>
+            <button class="category-btn btn-color-green" data-category="日常">
+                <i class="fas fa-bookmark"></i> 日常
+            </button>
+            <button class="category-btn btn-color-yellow" data-category="心情">
+                <i class="fas fa-face-laugh"></i> 心情
+            </button>
+            <button class="category-btn btn-color-orange" data-category="美食">
+                <i class="fas fa-utensils"></i> 美食
+            </button>
+            <button class="category-btn btn-color-blue" data-category="旅行">
+                <i class="fas fa-plane"></i> 旅行
+            </button>
+            <button class="category-btn btn-color-creme-yellow" data-category="心愿">
+                <i class="fas fa-star"></i> 心愿
+            </button>
+        </div>
+    </header>
+
+
+
+    <div class="gallery" id="imageGallery">
+        <!-- 图片卡片将通过JavaScript动态添加 -->
+    </div>
+
+    <!-- 加载指示器 -->
+    <div id="loadingIndicator" class="load-more-loading">
+        <div class="load-more-spinner"></div>
+        正在加载更多内容...
+    </div>
+
+    <!-- 结束消息 -->
+    <div id="endMessage" class="load-more-end-message" style="display: none;">
+        没有更多内容了
+    </div>
+
+
+    <!-- 编辑图片信息的模态框 -->
+    <div class="modal" id="editModal">
+        <div class="modal-content" id="modalContent">
+            <div class="modal-header">
+                <h3 class="modal-title">编辑图片信息</h3>
+            </div>
+            <div class="btn-append-container">
+                <button type="button" class="btn-append-pic" id="appendPicBtn">添加图片</button>
+                <input type="file" id="appendFileInput" class="file-input" accept="image/*" multiple>
+            </div>
+            <!-- 上传预览区域 -->
+            <div class="edit-preview" id="editPreview">
+                <div class="preview-list" id="editPreviewList">
+                    <!-- 预览图片将在这里显示 -->
+                </div>
+            </div>
+            <form id="imageForm">
+                <input type="hidden" id="editIndex">
+                <div class="form-group">
+                    <label for="imageTitle">图片标题</label>
+                    <input type="text" class="form-control" id="imageTitle" placeholder="输入图片标题">
+                </div>
+                <div class="form-group">
+                    <label for="imageDate">图片日期</label>
+                    <input type="text" id="imageDate" class="form-control" placeholder="点击选择日期" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageCategory">分类</label>
+                    <select id="imageCategory" class="form-control">
+                        <option>我们</option>
+                        <option>日常</option>
+                        <option>心情</option>
+                        <option>美食</option>
+                        <option>旅行</option>
+                        <option>心愿</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageDescription">图片描述</label>
+                    <div class="resize-area">
+                        <div class="resizable-textarea">
+                            <textarea id="imageDescription" rows="8" placeholder="输入图片描述"></textarea>
+                            <div class="resize-handle" id="resize-handle"></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" id="cancelEdit">取消</button>
+                    <button type="submit" class="btn btn-secondary" id="submitEdit">确定</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Loading遮罩层 -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="loading-spinner">
+            <div class="spinner-circle"></div>
+        </div>
+        <div class="loading-text">加载中，请稍候...</div>
+    </div>
+</div>
+<!-- 通知弹窗 -->
+<div class="notification" id="notification">
+    <div class="notification-icon">!</div>
+    <div class="notification-content">
+        <div class="notification-title" id="notificationTitle">通知标题</div>
+        <div class="notification-message" id="notificationMessage">这里是通知内容</div>
+    </div>
+</div>
+
+<!--登录信息弹窗-->
+<div class="msg-modal-overlay" id="modalOverlay">
+    <div class="msg-modal">
+        <div class="msg-modal-header">
+            <h2>权限信息</h2>
+        </div>
+        <form id="loginForm" class="msg-form">
+            <div class="msg-form-group">
+                <label for="cosId">ID</label>
+                <input type="text" id="cosId" name="cosId" placeholder="请输入ID" required>
+                <div class="msg-error-message" id="usernameError">ID不能为空</div>
+            </div>
+            <div class="msg-form-group">
+                <label for="cosToken">密钥</label>
+                <input type="password" id="cosToken" name="password" placeholder="请输入您的密钥" required>
+                <div class="msg-error-message" id="passwordError">密钥不能为空</div>
+            </div>
+
+            <div class="msg-form-group">
+                <label for="user">用户</label>
+                <select id="user">
+                    <option>
+                        娜宝
+                    </option>
+                    <option>
+                        温宝
+                    </option>
+                </select>
+            </div>
+            <div class="msg-form-footer">
+                <button type="button" class="login-btn login-btn-secondary" id="cancelBtn">取消</button>
+                <button type="submit" class="login-btn login-btn-cancel">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+<script src="components/login.js"></script>
+<script src="components/cos.js"></script>
+<script src="components/load-more.js"></script>
+<script src="components/category.js"></script>
+<script src="components/loading.js"></script>
+<script src="components/notification.js"></script>
+<script src="gallery-edit.js"></script>
+</html>
