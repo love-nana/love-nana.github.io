@@ -292,11 +292,14 @@ h1 {
 }
 
 .close-btn {
-    background: none;
+    background: #eee;
+    border-radius: 50%;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
     color: #7f8c8d;
+    padding: 0 0.8rem 0.3rem;
+    width: auto;
     transition: color 0.2s ease;
 }
 
