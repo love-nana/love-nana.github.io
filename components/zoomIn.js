@@ -14,6 +14,7 @@ function openZoomInModal(target) {
 function closeZoomInModal() {
     modal.classList.remove('active');
     document.body.style.overflow = 'auto'; // 恢复背景滚动
+    window.visualViewport.scale = 1;
 }
 
 // 点击模态框背景关闭
