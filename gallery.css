@@ -55,7 +55,7 @@ body {
     color: #7a5c3c;
     margin-top: 5px;
     flex-grow: 1;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .food-meta {
