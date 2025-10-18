@@ -32,7 +32,8 @@ if (food.images) {
 function createImgItem(imgUrl) {
     const item = document.createElement('img');
     item.className = 'food-image';
-    item.src = imgUrl;
+    item.dataset.originalSrc = imgUrl;
+    item.src = imgUrl + "&imageMogr2/quality/30";
     item.addEventListener('click', (e) => {
        e.preventDefault();
         openZoomInModal(e.target);

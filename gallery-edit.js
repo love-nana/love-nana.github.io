@@ -638,6 +638,7 @@ function ignoreContextmenuEvent(target) {
     // 监听上下文菜单事件（长按触发）
     target.addEventListener('contextmenu', function (e) {
         e.preventDefault();
+        alert('菜单已激活 (长按)');
         console.log('菜单已激活 (长按)');
     });
 }
@@ -700,6 +701,7 @@ function showEditPics(image) {
                 }
             });
             ignoreContextmenuEvent(previewItem);
+            alert(previewItem.querySelector('img'));
             ignoreContextmenuEvent(previewItem.querySelector('img'));
             addEditPicMoveEvent(previewItem);
         });

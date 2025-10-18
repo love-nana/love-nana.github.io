@@ -4,8 +4,8 @@ const modalImg = document.getElementById('modalImage');
 
 // 打开模态框
 function openZoomInModal(target) {
-    modalImg.src = target.src;
-    console.log(modalImg.src)
+    modalImg.src = target.dataset.originalSrc;
+    console.log(modalImg.src);
     modal.classList.add('active');
     document.body.style.overflow = 'hidden'; // 防止背景滚动
 }
