@@ -23,6 +23,7 @@ const imageDate = document.getElementById('imageDate');
 const imageCategory = document.getElementById('imageCategory');
 
 const imageDescription = document.getElementById('imageDescription');
+let editPreviewList = document.getElementById('editPreviewList');
 
 // 当前拖动的元素
 let draggedItem = null;
@@ -38,6 +39,7 @@ let curEditImage = null;
 let appendUploadFileMap = new Map();
 
 document.addEventListener('DOMContentLoaded', function () {
+    ignoreContextmenuEvent(editPreviewList);
     if (cosConfig.secretId && cosConfig.secretKey && localStorage.getItem('local_user')) {
         getCosUrl('foodData.json', false).then(filePath => {
             loadJSON(filePath)
@@ -638,7 +640,6 @@ function ignoreContextmenuEvent(target) {
     // 监听上下文菜单事件（长按触发）
     target.addEventListener('contextmenu', function (e) {
         e.preventDefault();
-        alert('菜单已激活 (长按)');
         console.log('菜单已激活 (长按)');
     });
 }
@@ -656,8 +657,6 @@ function openEditModal(index) {
     document.body.style.overflow = 'hidden'; // 防止背景滚动
     showEditPics(image);
 }
-
-let editPreviewList = document.getElementById('editPreviewList');
 
 function showEditPics(image) {
     curEditImage = deepCloneJSON(image);
@@ -701,7 +700,6 @@ function showEditPics(image) {
                 }
             });
             ignoreContextmenuEvent(previewItem);
-            alert(previewItem.querySelector('img'));
             ignoreContextmenuEvent(previewItem.querySelector('img'));
             addEditPicMoveEvent(previewItem);
         });
