@@ -470,17 +470,16 @@ textarea.form-control {
     position: absolute;
     top: 5px;
     right: 5px;
-    background: rgba(231, 76, 60, 0.8);
+    /*background: rgba(231, 76, 60, 0.8);*/
+    background: #B6CEB4;
     color: white;
-    border: none;
     border-radius: 50%;
-    width: 24px;
-    height: 24px;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 1.8rem;
 }
 
 .upload-actions {
