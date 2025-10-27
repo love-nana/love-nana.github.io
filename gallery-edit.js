@@ -676,7 +676,7 @@ function showEditPics(image) {
             previewItem.dataset.index = index;
             previewItem.className = 'preview-item';
             previewItem.innerHTML = `
-                        <img src="${url}"><button class="remove-btn" data-index="${index}">&times;</button>
+                        <img src="${url}"><i class="fa-solid fa-circle-xmark remove-btn" data-index="${index}"></i>
                         `;
             editPreviewList.appendChild(previewItem);
             // 添加移除按钮事件
@@ -738,7 +738,7 @@ async function handleFilesAsync(files) {
             let pIndex = index + beforeAddCnt;
             previewItem.dataset.index = pIndex;
             previewItem.innerHTML = `
-                        <img src="${dataUrl}"><button class="remove-btn" data-index="${pIndex}">&times;</button>
+                        <img src="${dataUrl}"><i class="fa-solid fa-circle-xmark remove-btn" data-index="${pIndex}"></i>
                         `;
             editPreviewList.appendChild(previewItem);
             curEditImage.images.push(dataUrl);
@@ -836,8 +836,8 @@ async function showPreview(files) {
         const previewItem = document.createElement('div');
         previewItem.className = 'preview-item';
         previewItem.innerHTML = `
-                        <img src="${dataUrl}" alt="${file.name}">  
-                        <button class="remove-btn" data-index="${index}">&times;</button>
+                        <img src="${dataUrl}" alt="${file.name}">
+                        <i class="fa-solid fa-circle-xmark remove-btn" data-index="${index}"></i>
                     `;
         previewList.appendChild(previewItem);
         // 添加移除按钮事件
