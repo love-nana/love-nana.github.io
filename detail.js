@@ -96,7 +96,7 @@ let startY = 0;
 let endX = 0;
 let endY = 0;
 let singleFinger = false;
-const clickThreshold = 100; // 点击容差
+const clickThreshold = 50; // 点击容差
 let startTime = 0;
 
 function handleTouchStart(e) {

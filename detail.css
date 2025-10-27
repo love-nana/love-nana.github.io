@@ -83,7 +83,7 @@ body {
         width: 100%;
     }
     .pic-close-btn {
-        padding: 0.1rem 0.8rem 0.2rem !important;
+        padding: 0.2rem 0.8rem 0.2rem !important;
     }
 
 }
@@ -140,7 +140,7 @@ body {
     font-size: 2rem;
     cursor: pointer;
     color: #7f8c8d;
-    padding: 0.2rem 0.8rem 0.3rem;
+    padding: 0.3rem 0.8rem 0.3rem;
     width: auto;
     transition: color 0.2s ease;
 }
