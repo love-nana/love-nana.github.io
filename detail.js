@@ -129,7 +129,7 @@ function handleTouchMove(e) {
 
         if (initialDistance > 0) {
             const scale = currentDistance / initialDistance;
-            currentScale = Math.max(0.5, Math.min(3, currentScale * scale));
+            currentScale = Math.max(1, Math.min(3, currentScale * scale));
             updateImageTransform();
             initialDistance = currentDistance;
         }
@@ -137,8 +137,8 @@ function handleTouchMove(e) {
     // 单指触摸 - 拖动
     else if (e.touches.length === 1 && isDragging) {
         e.preventDefault();
-        translateX = e.touches[0].clientX - startX;
-        translateY = e.touches[0].clientY - startY;
+        translateX = 2*(e.touches[0].clientX - startX);
+        translateY = 2*(e.touches[0].clientY - startY);
         updateImageTransform();
     }
 }
