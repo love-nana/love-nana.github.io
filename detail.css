@@ -141,3 +141,23 @@ body {
     width: auto;
     transition: color 0.2s ease;
 }
+
+.pic-actions {
+    z-index: 9999;
+    position: absolute;
+    bottom: 2rem;
+    display: flex;
+    gap: 5rem;
+}
+.pic-scroll-btn {
+    background: #3333;
+    border-radius: 50%;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #7f8c8d;
+    opacity: 0.8;
+    padding: 0.3rem 0.8rem 0.3rem;
+    width: auto;
+    transition: color 0.2s ease;
+}
