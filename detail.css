@@ -64,10 +64,12 @@ body {
     html {
         font-size: 10px;
     }
+
     .modal-content {
         width: 95%;
         padding: 10px;
     }
+
     .food-card {
         width: 100%;
     }
@@ -79,20 +81,11 @@ body {
     html {
         font-size: 12px;
     }
+
     .food-card {
         width: 100%;
     }
-    .pic-close-btn {
-        padding: 0.2rem 0.8rem 0.2rem !important;
-    }
-
 }
-
-/*@media (min-width: 1080px) {*/
-/*    html {*/
-/*        font-size: 20px;*/
-/*    }*/
-/*}*/
 
 .zoom-in-modal {
     position: fixed;
@@ -128,39 +121,18 @@ body {
 .zoom-in-modal.active img {
     transform: scale(1);
 }
+
 .pic-close-btn {
     z-index: 9999;
     position: absolute;
     top: 2rem;
     right: 2rem;
     display: inline-block;
-    background: #333;
     border-radius: 50%;
     border: none;
-    font-size: 2rem;
+    font-size: 3rem;
     cursor: pointer;
-    color: #7f8c8d;
-    padding: 0.3rem 0.8rem 0.3rem;
-    width: auto;
-    transition: color 0.2s ease;
-}
-
-.pic-actions {
-    z-index: 9999;
-    position: absolute;
-    bottom: 2rem;
-    display: flex;
-    gap: 5rem;
-}
-.pic-scroll-btn {
-    background: #3333;
-    border-radius: 50%;
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    color: #7f8c8d;
-    opacity: 0.8;
-    padding: 0.3rem 0.8rem 0.3rem;
+    color: #333;
     width: auto;
     transition: color 0.2s ease;
 }

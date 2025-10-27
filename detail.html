@@ -6,9 +6,11 @@
     <title>我们的故事</title>
     <link rel="icon" type="image/x-icon" href="imgs/favicon.png">
     <link rel="stylesheet" href="detail.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 <div class="food-card">
+
     <div class="image-list" id="image-list">
     </div>
 
@@ -19,11 +21,7 @@
     </div>
 </div>
 <div class="zoom-in-modal" id="imageModal">
-    <button type="button" class="pic-close-btn" id="modalClose" onclick="closeZoomInModal()">&times;</button>
-<!--    <div class="pic-actions">-->
-<!--        <button type="button" class="pic-scroll-btn" onclick="prevImage()">⬅</button>-->
-<!--        <button type="button" class="pic-scroll-btn" onclick="nextImage()">➡</button>-->
-<!--    </div>-->
+    <i class="fa-solid fa-circle-xmark pic-close-btn" onclick="closeZoomInModal()"></i>
     <img id="modalImage">
 
 </div>

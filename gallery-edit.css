@@ -114,6 +114,11 @@ h1 {
     transform: translateY(-2px);
 }
 
+.close-edit-btn {
+    font-size: 2rem;
+    color: #B6CEB4;
+}
+
 
 .gallery {
     display: grid;
