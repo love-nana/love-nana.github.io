@@ -96,13 +96,14 @@ let startY = 0;
 let endX = 0;
 let endY = 0;
 let singleFinger = false;
-const swipeThreshold = 50; // 滑动阈值
-const clickThreshold = 10; // 点击容差
+const clickThreshold = 100; // 点击容差
+let startTime = 0;
 
 function handleTouchStart(e) {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
     singleFinger = e.touches.length === 1;
+    startTime = new Date().getTime();
 }
 
 function handleTouchMove(e) {
@@ -110,11 +111,16 @@ function handleTouchMove(e) {
         e.preventDefault();
         singleFinger = true;
     } else {
-        singleFinger =false;
+        singleFinger = false;
     }
 }
 
 function handleTouchEnd(e) {
+    let endTime = new Date().getTime();
+    if (endTime - startTime > 300) {
+        return;
+    }
+
     if (!singleFinger) {
         return
     }

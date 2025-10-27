@@ -567,6 +567,7 @@ function handleAppendPicTouchStart(e) {
     });
     if (!e.target.classList.contains('remove-btn')) {
         e.preventDefault();
+        e.stopPropagation();
         touchTimeout = setTimeout(() => {
             draggedElement = this;
             const touch = e.touches[0];
@@ -575,7 +576,7 @@ function handleAppendPicTouchStart(e) {
             this.classList.add('dragging');
             // 添加移动端拖拽时的视觉反馈
             document.getElementById('modalContent').style.overflow = 'hidden';
-        }, 1000);
+        }, 100);
     }
 }
 
@@ -584,6 +585,7 @@ function handleAppendPicTouchMove(e) {
     console.log('handleTouchMove')
     if (!draggedElement) return;
     e.preventDefault();
+    e.stopPropagation();
     const touch = e.touches[0];
     const deltaX = touch.clientX - touchStartX;
     const deltaY = touch.clientY - touchStartY;
@@ -598,6 +600,8 @@ function handleAppendPicTouchEnd(e) {
         clearTimeout(touchTimeout)
     }
     if (!draggedElement) return;
+    e.preventDefault();
+    e.stopPropagation();
     // 检测碰撞并交换位置
     const elements = Array.from(document.querySelectorAll('#editPreviewList .preview-item:not(.dragging)'));
     const draggedRect = draggedElement.getBoundingClientRect();
