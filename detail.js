@@ -95,19 +95,29 @@ let startX = 0;
 let startY = 0;
 let endX = 0;
 let endY = 0;
+let singleFinger = false;
 const swipeThreshold = 50; // 滑动阈值
 const clickThreshold = 10; // 点击容差
 
 function handleTouchStart(e) {
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
+    singleFinger = e.touches.length === 1;
 }
 
 function handleTouchMove(e) {
-    // e.preventDefault();
+    if (e.touches.length === 1) {
+        e.preventDefault();
+        singleFinger = true;
+    } else {
+        singleFinger =false;
+    }
 }
 
 function handleTouchEnd(e) {
+    if (!singleFinger) {
+        return
+    }
     endX = e.changedTouches[0].clientX;
     endY = e.changedTouches[0].clientY;
 
