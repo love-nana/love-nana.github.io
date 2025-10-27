@@ -59,6 +59,7 @@ function showSingleImg() {
 function openZoomInModal(target) {
     console.log('openZoomInModal')
     currentIndex = parseInt(target.dataset.picIndex);
+    resetImageTransform();
     showSingleImg();
     modal.classList.add('active');
     document.body.style.overflow = 'hidden'; // 防止背景滚动
@@ -98,53 +99,57 @@ let endY = 0;
 const swipeThreshold = 50; // 滑动阈值
 const clickThreshold = 10; // 点击容差
 
+// 缩放相关变量
+let currentScale = 1;
+let initialDistance = 0;
+let isDragging = false;
+let translateX = 0, translateY = 0;
+
+
 function handleTouchStart(e) {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
+    // 双指触摸 - 缩放
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        initialDistance = getDistance(e.touches);
+    }
+    // 单指触摸 - 拖动
+    else if (e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - translateX;
+        startY = e.touches[0].clientY - translateY;
+    }
+
 }
 
 function handleTouchMove(e) {
-    e.preventDefault();
+    // 双指触摸 - 缩放
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        const currentDistance = getDistance(e.touches);
+
+        if (initialDistance > 0) {
+            const scale = currentDistance / initialDistance;
+            currentScale = Math.max(0.5, Math.min(3, currentScale * scale));
+            updateImageTransform();
+            initialDistance = currentDistance;
+        }
+    }
+    // 单指触摸 - 拖动
+    else if (e.touches.length === 1 && isDragging) {
+        e.preventDefault();
+        translateX = e.touches[0].clientX - startX;
+        translateY = e.touches[0].clientY - startY;
+        updateImageTransform();
+    }
 }
 
 function handleTouchEnd(e) {
-    endX = e.changedTouches[0].clientX;
-    endY = e.changedTouches[0].clientY;
-
-    const diffX = Math.abs(startX - endX);
-    const diffY = Math.abs(startY - endY);
-    console.log(endX, endY);
-    const maxDiff = Math.max(diffX, diffY);
-
-    if (maxDiff < clickThreshold) {
-        // 检查点击位置，如果是非图片区域则关闭
-        const imageRect = modalImg.getBoundingClientRect();
-        const clickX = (startX + endX) / 2;
-        const clickY = (startY + endY) / 2;
-        // 如果点击在图片外部，关闭查看器
-        if (clickX < imageRect.left || clickX > imageRect.right ||
-            clickY < imageRect.top || clickY > imageRect.bottom) {
-            e.preventDefault();
-            closeZoomInModal();
-        }
-    } else {
-        if (diffX > diffY) { //左右滑动
-            if (startX > endX) {
-                e.preventDefault();
-                nextImage(); // 向左滑动，下一张
-            } else {
-                e.preventDefault();
-                prevImage(); // 向右滑动，上一张
-            }
-        } else { //上下滑动
-            if (startY > endY) {
-                e.preventDefault();
-                nextImage(); // 向下滑动，下一张
-            } else {
-                e.preventDefault();
-                prevImage(); // 向上滑动，上一张
-            }
-        }
+    // 重置状态
+    if (e.touches.length < 2) {
+        initialDistance = 0;
+    }
+    if (e.touches.length === 0) {
+        isDragging = false;
     }
 }
 
@@ -160,4 +165,27 @@ function prevImage() {
     currentIndex = (currentIndex - 1 + allImgUrls.length) % allImgUrls.length;
     showSingleImg();
 }
+
+
+// 重置图片变换
+function resetImageTransform() {
+    currentScale = 1;
+    translateX = 0;
+    translateY = 0;
+    updateImageTransform();
+}
+
+// 更新图片变换
+function updateImageTransform() {
+    modalImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentScale})`;
+}
+
+// 计算两点之间的距离
+function getDistance(touches) {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+
 
