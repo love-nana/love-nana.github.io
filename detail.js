@@ -57,7 +57,6 @@ function showSingleImg() {
 
 // 打开模态框
 function openZoomInModal(target) {
-    console.log('openZoomInModal')
     currentIndex = parseInt(target.dataset.picIndex);
     showSingleImg();
     modal.classList.add('active');
@@ -69,7 +68,6 @@ function closeZoomInModal() {
     modal.classList.remove('active');
     document.body.style.overflow = 'auto'; // 恢复背景滚动
     modalImg.src = "";
-    console.log('closeZoomInModal')
 }
 
 // 点击模态框背景关闭
@@ -135,7 +133,6 @@ function handleTouchEnd(e) {
 
     const diffX = Math.abs(startX - endX);
     const diffY = Math.abs(startY - endY);
-    console.log(endX, endY);
     const maxDiff = Math.max(diffX, diffY);
 
     if (maxDiff < clickThreshold) {
