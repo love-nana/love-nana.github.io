@@ -124,6 +124,12 @@ function handleTouchEnd(e) {
     if (!singleFinger) {
         return
     }
+    //放大情况下，不允许切换图片（避免缩放功能冲突）
+    let curScaleVal = window.visualViewport.scale;
+    if (curScaleVal > 1) {
+        return;
+    }
+
     endX = e.changedTouches[0].clientX;
     endY = e.changedTouches[0].clientY;
 
