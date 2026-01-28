@@ -983,6 +983,9 @@ function showDetail(item) {
 
 getCosUrl('assert/header-bg.jpg').then(res => {
     document.getElementById('header-bg').style.backgroundImage = 'url(' + res + ')';
+    document.getElementById('header-bg').addEventListener('click', (e) => {
+        window.open('./gallery.html');
+    });
 });
 
 
