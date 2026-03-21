@@ -11,6 +11,7 @@
     <div v-if="galleryStore.displayedPhotos.length > 0" class="gallery-content">
       <MasonryGrid
         :photos="galleryStore.displayedPhotos"
+        :is-reloading="isReloading"
         @select="showDetail"
       />
     </div>
@@ -66,6 +67,7 @@ const { loadPhotos, getPhotoUrls } = useCos()
 const showLogin = ref(false)
 const loadMoreTrigger = ref<HTMLElement>()
 const isLoadingMore = ref(false)
+const isReloading = ref(false)
 let observer: IntersectionObserver | null = null
 
 // 加载照片
@@ -109,6 +111,7 @@ async function loadMore() {
   if (isLoadingMore.value || !galleryStore.canLoadMore) return
 
   isLoadingMore.value = true
+  isReloading.value = true
   galleryStore.loadMore()
 
   // 等待 DOM 更新后重新设置 observer
@@ -118,6 +121,7 @@ async function loadMore() {
   // 模拟短暂延迟以显示加载动画
   setTimeout(() => {
     isLoadingMore.value = false
+    isReloading.value = false
   }, 300)
 }
 

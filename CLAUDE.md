@@ -23,20 +23,22 @@ npm run build    # 类型检查 + 构建到 dist/
 npm run preview  # 预览构建产物
 ```
 
-开发服务器默认打开 `/src/pages/index/index.html`。
+开发服务器默认打开 `/src/pages/nav/index.html`。
 
 ## 架构
 
 ### 多页面应用结构
 
-Vite 构建 4 个入口点（配置于 `vite.config.ts`）：
-- `src/pages/index/index.html` → 主页（恋爱统计、天数计数）
+Vite 构建 5 个入口点（配置于 `vite.config.ts`）：
+- `src/pages/nav/index.html` → 主页（导航页）
+- `src/pages/index/index.html` → 关于页（恋爱统计、天数计数）
 - `src/pages/gallery/index.html` → 照片瀑布流画廊
 - `src/pages/gallery-edit/index.html` → 照片管理后台（上传/删除）
 - `src/pages/detail/index.html` → 单张照片详情页
 
 构建后 HTML 文件会被展平到 `dist/` 根目录：
-- `dist/index.html`
+- `dist/index.html`（导航页）
+- `dist/about.html`（恋爱统计页）
 - `dist/gallery.html`
 - `dist/gallery-edit.html`
 - `dist/detail.html`
@@ -46,7 +48,12 @@ Vite 构建 4 个入口点（配置于 `vite.config.ts`）：
 ```
 src/
 ├── pages/
-│   ├── index/              # 主页 Vue 应用
+│   ├── nav/                # 主页 Vue 应用（导航）
+│   │   ├── App.vue
+│   │   ├── main.ts
+│   │   ├── index.html
+│   │   └── nav.css
+│   ├── index/              # 关于页 Vue 应用（恋爱统计）
 │   │   ├── App.vue
 │   │   ├── main.ts
 │   │   ├── index.html

@@ -29,9 +29,9 @@
       </div>
     </div>
 
-    <!-- 加载遮罩 -->
+    <!-- 加载遮罩（仅重新加载/加载更多时显示） -->
     <Transition name="fade">
-      <div v-if="isLoading" class="loading-overlay">
+      <div v-if="isReloading" class="loading-overlay">
         <div class="loading-spinner"></div>
       </div>
     </Transition>
@@ -46,6 +46,7 @@ import type { Photo } from '@/types'
 
 const props = defineProps<{
   photos: Photo[]
+  isReloading?: boolean  // 是否是重新加载（加载更多），true 时显示遮罩
 }>()
 
 defineEmits<{
@@ -54,7 +55,6 @@ defineEmits<{
 
 const container = ref<HTMLElement>()
 const containerWidth = ref(1200)
-const isLoading = ref(false)
 let msnry: Masonry | null = null
 
 // 计算列数和列宽
@@ -128,10 +128,6 @@ function reloadMasonry() {
 
     // 布局完成后恢复 Masonry 动画
     ;(msnry as any).options.transitionDuration = 400
-
-    setTimeout(() => {
-      isLoading.value = false
-    }, 50)
   })
 }
 
@@ -161,13 +157,10 @@ onUnmounted(() => {
 })
 
 watch(() => props.photos, async () => {
-  // 立即显示遮罩
-  isLoading.value = true
-
   // 等待 DOM 更新
   await nextTick()
 
-  // 短暂延迟确保遮罩已渲染
+  // 短暂延迟确保 DOM 已更新
   requestAnimationFrame(() => {
     reloadMasonry()
   })
