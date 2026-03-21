@@ -38,7 +38,7 @@
             <h3>还没有图片</h3>
             <p>点击"添加图片"按钮上传您的第一张图片</p>
         </div>
-        <div v-for="(image, idx) in filteredImages" :key="image.id || idx"
+        <div v-for="(image, idx) in displayedImages" :key="image.id || idx"
              class="image-card" :data-index="getOriginalIndex(image)" draggable="true"
              @dragstart="dragDrop.handleDragStart($event, image, idx)"
              @dragend="dragDrop.handleDragEnd"
@@ -84,7 +84,7 @@
     </div>
 
     <!-- 结束消息 -->
-    <div id="endMessage" class="load-more-end-message" :style="{ display: hasMore ? 'none' : 'block' }">
+    <div id="endMessage" class="load-more-end-message" :style="{ display: canLoadMore ? 'none' : 'block' }">
         没有更多内容了
     </div>
 
@@ -177,7 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useCos } from '@/composables/useCos'
 import { useDragDrop } from '@/composables/useDragDrop'
 import { useImageUpload } from '@/composables/useImageUpload'
@@ -204,6 +204,12 @@ const showLoading = ref(false)
 const showLoginModal = ref(false)
 const currentCategoryFilter = ref<Category>('all')
 
+// 分页
+const perPage = 20
+const loadedCount = ref(perPage)
+const isLoadingMore = ref(false)
+let scrollHandler: (() => void) | null = null
+
 // Composables
 const imageUpload = useImageUpload()
 const dragDrop = useDragDrop(images, handleReorder)
@@ -217,6 +223,50 @@ const filteredImages = computed(() => {
   return images.value.filter(img => img.category === currentCategoryFilter.value)
 })
 
+const displayedImages = ref<any[]>([])
+
+const canLoadMore = computed(() => loadedCount.value < filteredImages.value.length)
+
+// 监听分类变化，重置已加载数量
+watch(currentCategoryFilter, () => {
+  loadedCount.value = perPage
+})
+
+// 监听 filteredImages 和 loadedCount 变化，更新 displayedImages
+watch(
+  [filteredImages, loadedCount],
+  () => {
+    displayedImages.value = filteredImages.value.slice(0, loadedCount.value)
+  },
+  { immediate: true }
+)
+
+// 加载更多
+function loadMore() {
+  if (!canLoadMore.value || isLoadingMore.value) return
+  isLoadingMore.value = true
+  loadedCount.value = Math.min(loadedCount.value + perPage, filteredImages.value.length)
+  setTimeout(() => {
+    isLoadingMore.value = false
+  }, 300)
+}
+
+// 滚动处理（带防抖）
+let scrollTimer: number | null = null
+function handleScroll() {
+  if (scrollTimer) return
+  scrollTimer = window.setTimeout(() => {
+    scrollTimer = null
+    const scrollTop = window.scrollY
+    const scrollHeight = document.documentElement.scrollHeight
+    const clientHeight = window.innerHeight
+    const scrollPercent = scrollTop / (scrollHeight - clientHeight)
+    if (scrollPercent >= 0.5 && canLoadMore.value && !isLoadingMore.value) {
+      loadMore()
+    }
+  }, 100)
+}
+
 // 初始化
 onMounted(() => {
   initResize()
@@ -228,6 +278,15 @@ onMounted(() => {
     setTimeout(() => {
       showLoginModal.value = true
     }, 500)
+  }
+
+  scrollHandler = handleScroll
+  window.addEventListener('scroll', scrollHandler, { passive: true })
+})
+
+onUnmounted(() => {
+  if (scrollHandler) {
+    window.removeEventListener('scroll', scrollHandler)
   }
 })
 

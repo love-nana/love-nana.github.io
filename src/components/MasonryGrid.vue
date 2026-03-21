@@ -60,8 +60,8 @@ let msnry: Masonry | null = null
 // 计算列数和列宽
 const columnConfig = computed(() => {
   const width = containerWidth.value
-  const gutter = 8
-  const itemMargin = 8 // 4px * 2 for left+right
+  const gutter = 4
+  const itemMargin = 6 // 3px * 2 for left+right
 
   let cols = 4
   let columnWidth = 280
@@ -81,9 +81,7 @@ const columnConfig = computed(() => {
 })
 
 // Masonry容器的内联样式
-const masonryStyle = computed(() => ({
-  maxWidth: `${columnConfig.value.columnWidth * columnConfig.value.cols + columnConfig.value.gutter * (columnConfig.value.cols - 1)}px`
-}))
+const masonryStyle = computed(() => ({}))
 
 function updateContainerWidth() {
   if (container.value) {
@@ -201,11 +199,11 @@ watch(() => props.photos, async () => {
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   box-sizing: border-box;
-  margin: 4px;
+  margin: 2px;
   opacity: 1;
   border: 1px solid rgba(201, 169, 110, 0.15);
   /* 不要改 */
-  width: calc((100% - 30px) / 4);
+  width: calc((100% - 18px) / 4);
 }
 
 .item:hover {
@@ -277,14 +275,14 @@ watch(() => props.photos, async () => {
 @media (max-width: 900px) {
   .item {
     /* 不要改 */
-    width: calc((100% - 24px) / 3);
+    width: calc((100% - 12px) / 3);
   }
 }
 
 @media (max-width: 600px) {
   .item {
     /* 不要改 */
-    width: calc((100% - 15px) / 2);
+    width: calc((100% - 8px) / 2);
   }
 }
 

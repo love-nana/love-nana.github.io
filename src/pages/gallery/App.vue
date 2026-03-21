@@ -22,10 +22,9 @@
     </div>
 
     <!-- 无限滚动加载指示器 -->
-    <div ref="loadMoreTrigger" v-if="galleryStore.canLoadMore" class="load-more-trigger">
+    <div v-if="galleryStore.canLoadMore" class="load-more-trigger">
       <div v-if="isLoadingMore" class="spinner"></div>
       <span v-if="isLoadingMore">正在加载...</span>
-      <span v-else>下拉加载更多</span>
     </div>
 
     <!-- 全部加载完毕 -->
@@ -47,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted, watch, nextTick } from 'vue'
+import { onMounted, ref, onUnmounted } from 'vue'
 import CategoryFilter from '@/components/CategoryFilter.vue'
 import MasonryGrid from '@/components/MasonryGrid.vue'
 import CosLoginModal from '@/components/CosLoginModal.vue'
@@ -65,10 +64,9 @@ const uiStore = useUiStore()
 const { loadPhotos, getPhotoUrls } = useCos()
 
 const showLogin = ref(false)
-const loadMoreTrigger = ref<HTMLElement>()
 const isLoadingMore = ref(false)
 const isReloading = ref(false)
-let observer: IntersectionObserver | null = null
+let scrollHandler: (() => void) | null = null
 
 // 加载照片
 async function fetchPhotos() {
@@ -114,10 +112,6 @@ async function loadMore() {
   isReloading.value = true
   galleryStore.loadMore()
 
-  // 等待 DOM 更新后重新设置 observer
-  await nextTick()
-  setupObserver()
-
   // 模拟短暂延迟以显示加载动画
   setTimeout(() => {
     isLoadingMore.value = false
@@ -125,24 +119,16 @@ async function loadMore() {
   }, 300)
 }
 
-// 设置 IntersectionObserver
-function setupObserver() {
-  if (!loadMoreTrigger.value) return
+// 滚动处理：滚动到 50% 时加载更多
+function handleScroll() {
+  const scrollTop = window.scrollY
+  const scrollHeight = document.documentElement.scrollHeight
+  const clientHeight = window.innerHeight
+  const scrollPercent = scrollTop / (scrollHeight - clientHeight)
 
-  if (observer) {
-    observer.disconnect()
+  if (scrollPercent >= 0.5 && galleryStore.canLoadMore && !isLoadingMore.value) {
+    loadMore()
   }
-
-  observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && galleryStore.canLoadMore && !isLoadingMore.value) {
-      loadMore()
-    }
-  }, {
-    threshold: 0.1,
-    rootMargin: '100px'
-  })
-
-  observer.observe(loadMoreTrigger.value)
 }
 
 // 查看详情
@@ -168,17 +154,13 @@ function onLoginSuccess() {
 
 onMounted(() => {
   fetchPhotos()
-})
-
-// 监听数据加载完成后设置 observer
-watch(() => galleryStore.displayedPhotos, async () => {
-  await nextTick()
-  setupObserver()
+  scrollHandler = handleScroll
+  window.addEventListener('scroll', scrollHandler, { passive: true })
 })
 
 onUnmounted(() => {
-  if (observer) {
-    observer.disconnect()
+  if (scrollHandler) {
+    window.removeEventListener('scroll', scrollHandler)
   }
 })
 </script>

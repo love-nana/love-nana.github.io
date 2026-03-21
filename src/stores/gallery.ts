@@ -8,7 +8,7 @@ export const useGalleryStore = defineStore('gallery', () => {
   const currentCategory = ref<Category>('all')
   const loading = ref(false)
   const loadedCount = ref(0)  // 已加载数量（用于分页）
-  const perPage = 10          // 每页数量
+  const perPage = 20          // 每页数量
   const hasMore = ref(true)   // 是否还有更多
 
   // 分类筛选后的照片
