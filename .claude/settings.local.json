@@ -18,7 +18,12 @@
       "Bash(pkill -f \"vite preview\")",
       "Bash(pkill -f \"vite\")",
       "WebFetch(domain:masonry.desandro.com)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:vitejs.dev)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:localhost)",
+      "Bash(pkill -f \"node.*vite\")"
     ]
   },
   "sandbox": {

@@ -3,6 +3,35 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import { rmSync, readFileSync, writeFileSync, existsSync } from 'fs'
 
+function devPageRewritePlugin() {
+  // 开发环境路径映射：扁平化后的路径 → 实际源码路径
+  const pathRewrite = [
+    ['./about.html', '/src/pages/index/index.html'],
+    ['./gallery.html', '/src/pages/gallery/index.html'],
+    ['./gallery-edit.html', '/src/pages/gallery-edit/index.html'],
+    ['./detail.html', '/src/pages/detail/index.html'],
+  ]
+
+  return {
+    name: 'dev-page-rewrite',
+    transform(code, id) {
+      if (!id.endsWith('.vue')) return
+
+      for (const [from, to] of pathRewrite) {
+        // 转义正则特殊字符
+        const escapedFrom = from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        // 匹配模板中的 href="./about.html"
+        code = code.replace(new RegExp(`href="${escapedFrom}"`, 'g'), `href="${to}"`)
+        // 匹配 JS 中的 window.location.href = './about.html'
+        // 以及 window.open('./detail.html')
+        // 统一替换引号内的路径为双引号格式
+        code = code.replace(new RegExp(`["']${escapedFrom}["']`, 'g'), `"${to}"`)
+      }
+      return code
+    }
+  }
+}
+
 function flattenHtmlOutput(distDir: string, pagesDir: string) {
   const renames = [
     ['index/index.html', 'about.html'],
@@ -30,28 +59,6 @@ function flattenHtmlOutput(distDir: string, pagesDir: string) {
   rmSync(pagesDir, { recursive: true, force: true })
   rmSync(resolve(distDir, 'src'), { recursive: true, force: true })
 }
-
-// 开发服务器路径重写：支持旧路径（如 /gallery.html）访问 src/pages 下的入口
-const devPageRewritePlugin = () => ({
-  name: 'dev-page-rewrite',
-  configureServer(server: any) {
-    const rewrites: Record<string, string> = {
-      '/': '/src/pages/nav/index.html',
-      '/index.html': '/src/pages/nav/index.html',
-      '/about.html': '/src/pages/index/index.html',
-      '/gallery.html': '/src/pages/gallery/index.html',
-      '/gallery-edit.html': '/src/pages/gallery-edit/index.html',
-      '/detail.html': '/src/pages/detail/index.html',
-    }
-    server.middlewares.use((req: any, res: any, next: any) => {
-      const url = req.url?.split('?')[0]
-      if (rewrites[url]) {
-        req.url = rewrites[url]
-      }
-      next()
-    })
-  }
-})
 
 // https://vitejs.dev/config/
 export default defineConfig({
