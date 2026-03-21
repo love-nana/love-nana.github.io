@@ -199,7 +199,6 @@ const { getPhotoUrl, getPhotoUrls, uploadPhotos, uploadJson, loadJson } = useCos
 // 状态
 const images = ref<any[]>([])
 const loading = ref(false)
-const hasMore = ref(false)
 const showLoading = ref(false)
 const showLoginModal = ref(false)
 const currentCategoryFilter = ref<Category>('all')
