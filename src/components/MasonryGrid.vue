@@ -203,7 +203,7 @@ watch(() => props.photos, async () => {
   opacity: 1;
   border: 1px solid rgba(201, 169, 110, 0.15);
   /* 不要改 */
-  width: calc((100% - 18px) / 4);
+  width: calc((100% - 28px) / 4);
 }
 
 .item:hover {
