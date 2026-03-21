@@ -6,7 +6,7 @@ import { rmSync, readFileSync, writeFileSync, existsSync } from 'fs'
 function devPageRewritePlugin() {
   // 开发环境路径映射：扁平化后的路径 → 实际源码路径
   const pathRewrite = [
-    ['./about.html', '/src/pages/index/index.html'],
+    ['./about.html', '/src/pages/about/index.html'],
     ['./gallery.html', '/src/pages/gallery/index.html'],
     ['./gallery-edit.html', '/src/pages/gallery-edit/index.html'],
     ['./detail.html', '/src/pages/detail/index.html'],
@@ -34,7 +34,7 @@ function devPageRewritePlugin() {
 
 function flattenHtmlOutput(distDir: string, pagesDir: string) {
   const renames = [
-    ['index/index.html', 'about.html'],
+    ['about/index.html', 'about.html'],
     ['nav/index.html', 'index.html'],
     ['gallery/index.html', 'gallery.html'],
     ['gallery-edit/index.html', 'gallery-edit.html'],
@@ -83,7 +83,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        about: resolve(__dirname, 'src/pages/index/index.html'),
+        about: resolve(__dirname, 'src/pages/about/index.html'),
         index: resolve(__dirname, 'src/pages/nav/index.html'),
         gallery: resolve(__dirname, 'src/pages/gallery/index.html'),
         'gallery-edit': resolve(__dirname, 'src/pages/gallery-edit/index.html'),

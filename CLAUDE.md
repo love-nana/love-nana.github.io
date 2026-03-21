@@ -31,7 +31,7 @@ npm run preview  # 预览构建产物
 
 Vite 构建 5 个入口点（配置于 `vite.config.ts`）：
 - `src/pages/nav/index.html` → 主页（导航页）
-- `src/pages/index/index.html` → 关于页（恋爱统计、天数计数）
+- `src/pages/about/index.html` → 关于页（恋爱统计、天数计数）
 - `src/pages/gallery/index.html` → 照片瀑布流画廊
 - `src/pages/gallery-edit/index.html` → 照片管理后台（上传/删除）
 - `src/pages/detail/index.html` → 单张照片详情页
@@ -53,7 +53,7 @@ src/
 │   │   ├── main.ts
 │   │   ├── index.html
 │   │   └── nav.css
-│   ├── index/              # 关于页 Vue 应用（恋爱统计）
+│   ├── about/              # 关于页 Vue 应用（恋爱统计）
 │   │   ├── App.vue
 │   │   ├── main.ts
 │   │   ├── index.html
