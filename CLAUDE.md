@@ -64,14 +64,10 @@ src/
 │   │   ├── index.html
 │   │   └── gallery.css
 │   ├── gallery-edit/       # 画廊管理后台 Vue 应用
-│   │   ├── App.vue
+│   │   ├── App.vue          # 使用 useDragDrop、useImageUpload、useEditModal composables
 │   │   ├── main.ts
 │   │   ├── index.html
-│   │   ├── gallery-edit.css
-│   │   ├── load-more.css
-│   │   ├── loading.css
-│   │   ├── login.css
-│   │   └── notification.css
+│   │   └── gallery-edit.css # 合并了所有样式（load-more、loading、login、notification）
 │   └── detail/             # 照片详情 Vue 应用
 │       ├── App.vue
 │       ├── main.ts
@@ -90,7 +86,10 @@ src/
 │   ├── auth.ts              # COS 凭证
 │   └── ui.ts                # UI 状态（loading、notifications）
 ├── composables/
-│   └── useCos.ts            # COS 操作（上传、获取签名 URL）
+│   ├── useCos.ts            # COS 操作（上传、获取签名 URL）
+│   ├── useDragDrop.ts       # 拖拽排序逻辑
+│   ├── useImageUpload.ts    # 图片上传处理
+│   └── useEditModal.ts      # 编辑弹窗逻辑
 ├── utils/
 │   ├── cache.ts             # 签名 URL 缓存（localStorage，14分钟 TTL）
 │   └── date.ts              # 纪念日日期计算
@@ -154,6 +153,14 @@ interface CategoryConfig {
 ### 认证
 
 编辑页面（`gallery-edit.html`）需要 COS 凭证。`CosLoginModal` 组件弹窗输入 SecretId/SecretKey，通过 `auth` Pinia store 存入 localStorage（key: `cos_auth`），并兼容旧版 localStorage 格式。
+
+### gallery-edit 模块重构
+
+为提升代码可维护性，已将 gallery-edit 模块重构：
+
+- **CSS 合并**：load-more.css、loading.css、login.css、notification.css 合并到 gallery-edit.css
+- **逻辑拆分 composables**：useDragDrop（拖拽排序）、useImageUpload（图片上传）、useEditModal（编辑弹窗）
+- **组件复用**：登录弹窗复用 `CosLoginModal` 组件，通知复用 `NotificationContainer` 组件
 
 ## 构建流程
 
