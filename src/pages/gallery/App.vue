@@ -188,7 +188,7 @@ body {
 }
 
 .gallery-content {
-  padding-top: 8px;
+  padding-top: 50px;
 }
 
 .empty-state {
