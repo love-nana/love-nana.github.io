@@ -138,6 +138,9 @@ h1 {
     line-height: 1.2;
     padding: 0.2rem;
     font-size: 0.6rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    text-align: center;
 }
 
 .image-card {
@@ -268,6 +271,10 @@ h1 {
     z-index: 1000;
     justify-content: center;
     align-items: center;
+}
+
+.modal.active {
+    display: flex;
 }
 
 .modal-content {
