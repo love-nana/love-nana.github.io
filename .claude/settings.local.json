@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/charming/workspace/web/love-nana.github.io -type f \\\\\\(-name *.html -o -name *.js -o -name *.css -o -name *.json -o -name *.yaml -o -name *.yml -o -name *.md -o -name *.txt \\\\\\))",
+      "Bash(npm create:*)",
+      "Bash(yes)",
+      "Bash(npm install:*)",
+      "Bash(timeout 10 npm run dev)",
+      "Bash(npm run:*)",
+      "Bash(curl -s http://localhost:5174/src/pages/detail/index.html)",
+      "Bash(node:*)",
+      "Bash(curl -s http://localhost:5174/src/pages/index/index.html)",
+      "Bash(curl -s http://localhost:5175/src/pages/index/index.html)",
+      "Bash(curl -s http://localhost:5175/src/pages/index/App.vue)",
+      "Bash(curl:*)",
+      "Bash(xargs kill:*)",
+      "Bash(ls:*)"
+    ]
+  },
+  "sandbox": {
+    "enabled": false,
+    "autoAllowBashIfSandboxed": false
+  }
+}
