@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "build": "vue-tsc && vite build && cp 744ab50020c6cc024259333778ef31d8.txt dist/744ab50020c6cc024259333778ef31d8.txt",
     "preview": "vite preview"
   },
   "keywords": [],
