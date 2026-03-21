@@ -96,11 +96,10 @@ function initMasonry() {
 
   updateContainerWidth()
 
-  // 等待图片加载完成后再初始化
-  imagesLoaded(container.value, () => {
-    if (!container.value) return
+  // 初始化 Masonry
+  const doInit = () => {
+    if (!container.value || msnry) return
 
-    // 强制更新容器宽度
     containerWidth.value = container.value.offsetWidth
 
     msnry = new Masonry(container.value, {
@@ -111,7 +110,17 @@ function initMasonry() {
       transitionDuration: '0.4s',
       stamp: '.masonry-stamp',
     })
+  }
+
+  // 图片加载完成后初始化
+  imagesLoaded(container.value, () => {
+    doInit()
   })
+
+  // fallback：500ms 后无论图片加载状态如何都初始化（处理图片已缓存的情况）
+  setTimeout(() => {
+    doInit()
+  }, 500)
 }
 
 function reloadMasonry() {
@@ -120,15 +129,22 @@ function reloadMasonry() {
   // 禁用 Masonry 动画
   ;(msnry as any).options.transitionDuration = 0
 
-  imagesLoaded(container.value, () => {
+  const doLayout = () => {
     if (!container.value || !msnry) return
-
     msnry.reloadItems()
     msnry.layout()
-
     // 布局完成后恢复 Masonry 动画
     ;(msnry as any).options.transitionDuration = 400
+  }
+
+  imagesLoaded(container.value, () => {
+    doLayout()
   })
+
+  // fallback：500ms 后无论图片加载状态如何都执行布局
+  setTimeout(() => {
+    doLayout()
+  }, 500)
 }
 
 let resizeTimer: number | null = null
