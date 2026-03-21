@@ -24,7 +24,7 @@ const uiStore = useUiStore()
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(250, 245, 239, 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,8 +45,8 @@ const uiStore = useUiStore()
 .spinner-circle {
   width: 100%;
   height: 100%;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #ff758c;
+  border: 3px solid #E5D4B3;
+  border-top: 3px solid #8B4557;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -57,8 +57,10 @@ const uiStore = useUiStore()
 }
 
 .loading-text {
-  color: #666;
-  font-size: 14px;
+  color: #8B4557;
+  font-size: 0.95rem;
+  font-family: Georgia, serif;
+  letter-spacing: 1px;
 }
 
 .fade-enter-active,

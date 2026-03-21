@@ -7,8 +7,16 @@
         :class="['notification', `notification-${notification.type}`]"
         @click="uiStore.removeNotification(notification.id)"
       >
-        <div class="notification-title">{{ notification.title }}</div>
-        <div class="notification-message">{{ notification.message }}</div>
+        <div class="notification-icon">
+          <span v-if="notification.type === 'success'">✓</span>
+          <span v-else-if="notification.type === 'error'">✕</span>
+          <span v-else-if="notification.type === 'warning'">⚠</span>
+          <span v-else>ℹ</span>
+        </div>
+        <div class="notification-content">
+          <div class="notification-title">{{ notification.title }}</div>
+          <div class="notification-message">{{ notification.message }}</div>
+        </div>
       </div>
     </transition-group>
   </div>
@@ -28,46 +36,76 @@ const uiStore = useUiStore()
   z-index: 10000;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .notification {
-  min-width: 250px;
-  max-width: 350px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  max-width: 360px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #FAFAFA;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.1),
+    0 0 0 1px rgba(201, 169, 110, 0.2);
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.notification-success {
-  border-left: 4px solid #4caf50;
+.notification:hover {
+  transform: translateX(-4px);
+  box-shadow:
+    0 6px 16px rgba(0,0,0,0.12),
+    0 0 0 1px rgba(201, 169, 110, 0.3);
 }
 
-.notification-error {
-  border-left: 4px solid #f44336;
+.notification-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  color: #fff;
 }
 
-.notification-warning {
-  border-left: 4px solid #ff9800;
+.notification-success .notification-icon {
+  background: #8B4557;
 }
 
-.notification-info {
-  border-left: 4px solid #2196f3;
+.notification-error .notification-icon {
+  background: #c0392b;
+}
+
+.notification-warning .notification-icon {
+  background: #C9A96E;
+}
+
+.notification-info .notification-icon {
+  background: #A65D6A;
+}
+
+.notification-content {
+  flex: 1;
 }
 
 .notification-title {
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 4px;
-  color: #333;
+  font-weight: 500;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+  color: #8B4557;
+  font-family: Georgia, serif;
 }
 
 .notification-message {
-  font-size: 13px;
+  font-size: 0.85rem;
   color: #666;
+  line-height: 1.4;
 }
 
 .slide-enter-active,

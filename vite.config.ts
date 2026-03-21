@@ -5,7 +5,8 @@ import { rmSync, readFileSync, writeFileSync, existsSync } from 'fs'
 
 function flattenHtmlOutput(distDir: string, pagesDir: string) {
   const renames = [
-    ['index/index.html', 'index.html'],
+    ['index/index.html', 'about.html'],
+    ['nav/index.html', 'index.html'],
     ['gallery/index.html', 'gallery.html'],
     ['gallery-edit/index.html', 'gallery-edit.html'],
     ['detail/index.html', 'detail.html'],
@@ -35,7 +36,9 @@ const devPageRewritePlugin = () => ({
   name: 'dev-page-rewrite',
   configureServer(server: any) {
     const rewrites: Record<string, string> = {
-      '/index.html': '/src/pages/index/index.html',
+      '/': '/src/pages/nav/index.html',
+      '/index.html': '/src/pages/nav/index.html',
+      '/about.html': '/src/pages/index/index.html',
       '/gallery.html': '/src/pages/gallery/index.html',
       '/gallery-edit.html': '/src/pages/gallery-edit/index.html',
       '/detail.html': '/src/pages/detail/index.html',
@@ -73,7 +76,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        index: resolve(__dirname, 'src/pages/index/index.html'),
+        about: resolve(__dirname, 'src/pages/index/index.html'),
+        index: resolve(__dirname, 'src/pages/nav/index.html'),
         gallery: resolve(__dirname, 'src/pages/gallery/index.html'),
         'gallery-edit': resolve(__dirname, 'src/pages/gallery-edit/index.html'),
         detail: resolve(__dirname, 'src/pages/detail/index.html'),
@@ -81,6 +85,6 @@ export default defineConfig({
     },
   },
   server: {
-    open: '/src/pages/index/index.html'
+    open: '/src/pages/nav/index.html'
   }
 })

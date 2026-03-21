@@ -117,7 +117,7 @@ function resetForm() {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(44, 44, 44, 0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,22 +126,28 @@ function resetForm() {
 }
 
 .modal-content {
-  background: white;
-  border-radius: 16px;
+  background: #FAF5EF;
+  border-radius: 12px;
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
   overflow: hidden;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.2),
+    0 0 0 1px rgba(201, 169, 110, 0.3);
 }
 
 .modal-header {
   padding: 20px 24px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px dashed #C9A96E;
+  text-align: center;
 }
 
 .modal-header h2 {
   margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 1.3rem;
+  color: #8B4557;
+  font-family: Georgia, serif;
+  letter-spacing: 2px;
 }
 
 form {
@@ -149,38 +155,42 @@ form {
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 label {
   display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #666;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  color: #8B4557;
+  font-family: Georgia, serif;
 }
 
 input,
 select {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
+  padding: 12px 14px;
+  border: 1px solid rgba(201, 169, 110, 0.4);
   border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
   box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.8);
+  font-family: Georgia, serif;
 }
 
 input:focus,
 select:focus {
   outline: none;
-  border-color: #ff758c;
+  border-color: #8B4557;
+  box-shadow: 0 0 0 3px rgba(139, 69, 87, 0.15);
 }
 
 .error-message {
   display: block;
   margin-top: 6px;
-  font-size: 12px;
-  color: #f44336;
+  font-size: 0.8rem;
+  color: #c0392b;
 }
 
 .modal-footer {
@@ -193,28 +203,32 @@ select:focus {
 button {
   padding: 10px 24px;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 20px;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-family: Georgia, serif;
 }
 
 .btn-secondary {
-  background: #f5f5f5;
-  color: #666;
+  background: #F0E4D7;
+  color: #8B4557;
+  border: 1px solid rgba(201, 169, 110, 0.3);
 }
 
 .btn-secondary:hover {
-  background: #e8e8e8;
+  background: #E5D4B3;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #ff758c, #ff9a9e);
+  background: linear-gradient(135deg, #8B4557, #A65D6A);
   color: white;
+  box-shadow: 0 3px 10px rgba(139, 69, 87, 0.25);
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(139, 69, 87, 0.35);
 }
 
 .fade-enter-active,

@@ -1,0 +1,54 @@
+/* 导航页全局样式 - 复古情书风格 */
+
+/* 基础重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: #FAF5EF;
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* 滚动条美化 - 复古铜色 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F0E4D7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #C9A96E, #A65D6A);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #A65D6A, #8B4557);
+}
+
+/* 选中文字颜色 */
+::selection {
+  background: rgba(139, 69, 87, 0.2);
+  color: #8B4557;
+}
+
+/* 链接统一样式 */
+a {
+  color: inherit;
+}

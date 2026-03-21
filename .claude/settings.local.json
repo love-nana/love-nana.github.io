@@ -16,7 +16,9 @@
       "Bash(xargs kill:*)",
       "Bash(ls:*)",
       "Bash(pkill -f \"vite preview\")",
-      "Bash(pkill -f \"vite\")"
+      "Bash(pkill -f \"vite\")",
+      "WebFetch(domain:masonry.desandro.com)",
+      "WebSearch"
     ]
   },
   "sandbox": {

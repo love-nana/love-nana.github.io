@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="masonry">
+  <div ref="container" class="masonry" :style="masonryStyle">
     <div
       v-for="photo in photos"
       :key="photo.id"
@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from 'vue'
+import { ref, watch, onMounted, nextTick, computed, onUnmounted } from 'vue'
 import Masonry from 'masonry-layout'
 import imagesLoaded from 'imagesloaded'
 import type { Photo } from '@/types'
@@ -44,130 +44,139 @@ defineEmits<{
 }>()
 
 const container = ref<HTMLElement>()
-const isLayouting = ref(false)
+const containerWidth = ref(1200)
 let msnry: Masonry | null = null
 
-function getColumnConfig() {
-  const scrollbarWidth = 17
-  const containerWidth = window.innerWidth - scrollbarWidth
+// 计算列数和列宽
+const columnConfig = computed(() => {
+  const width = containerWidth.value
+  const gutter = 8
+  const itemMargin = 8 // 4px * 2 for left+right
 
-  const width = window.innerWidth
-  let columns = 4
-  if (width < 768) columns = 2
-  else if (width < 1200) columns = 3
+  let cols = 4
+  let columnWidth = 280
 
-  const gutter = 6
-  const columnWidth = (containerWidth - gutter * (columns - 1)) / columns
+  if (width < 600) {
+    cols = 2
+    columnWidth = Math.floor((width - gutter - itemMargin) / 2)
+  } else if (width < 900) {
+    cols = 3
+    columnWidth = Math.floor((width - gutter * 2 - itemMargin) / 3)
+  } else {
+    cols = 4
+    columnWidth = Math.floor((width - gutter * 3 - itemMargin) / 4)
+  }
 
-  return { columnWidth, gutter }
+  return { columnWidth, gutter, cols }
+})
+
+// Masonry容器的内联样式
+const masonryStyle = computed(() => ({
+  maxWidth: `${columnConfig.value.columnWidth * columnConfig.value.cols + columnConfig.value.gutter * (columnConfig.value.cols - 1)}px`
+}))
+
+function updateContainerWidth() {
+  if (container.value) {
+    containerWidth.value = container.value.offsetWidth
+  }
 }
 
 function initMasonry() {
   if (!container.value) return
 
-  const { columnWidth, gutter } = getColumnConfig()
+  updateContainerWidth()
 
+  // 等待图片加载完成后再初始化
   imagesLoaded(container.value, () => {
-    msnry = new Masonry(container.value!, {
+    if (!container.value) return
+
+    // 强制更新容器宽度
+    containerWidth.value = container.value.offsetWidth
+
+    msnry = new Masonry(container.value, {
       itemSelector: '.item',
-      columnWidth: columnWidth,
-      gutter: gutter,
-      percentPosition: false,
+      columnWidth: columnConfig.value.columnWidth,
+      gutter: columnConfig.value.gutter,
+      percentPosition: true,
       transitionDuration: '0.4s',
       stamp: '.masonry-stamp',
     })
-
-    isLayouting.value = false
   })
 }
 
 function reloadMasonry() {
-  if (!container.value || !msnry) return
-
-  const { columnWidth, gutter } = getColumnConfig()
-
-  isLayouting.value = true
-
-  // 重新计算列宽（使用 any 类型）
-  ;(msnry as any).options.columnWidth = columnWidth
-  ;(msnry as any).options.gutter = gutter
+  if (!container.value) return
 
   imagesLoaded(container.value, () => {
-    msnry!.reloadItems()
+    if (!container.value || !msnry) return
 
-    // 渐变过渡
-    const items = container.value!.querySelectorAll('.item')
-    items.forEach((item: Element) => {
-      const el = item as HTMLElement
-      el.style.opacity = '0'
-      el.style.transform = 'translateY(20px)'
-      el.style.transition = 'opacity 0.3s, transform 0.3s'
-    })
-
-    msnry!.layout()
-
-    // 渐显
-    setTimeout(() => {
-      items.forEach((item: Element) => {
-        const el = item as HTMLElement
-        el.style.opacity = '1'
-        el.style.transform = 'translateY(0)'
-      })
-      isLayouting.value = false
-    }, 50)
+    msnry.reloadItems()
+    msnry.layout()
   })
 }
+
+let resizeTimer: number | null = null
 
 onMounted(() => {
   initMasonry()
 
-  // 窗口大小变化时重新初始化
-  let resizeTimer: number | null = null
   window.addEventListener('resize', () => {
     if (resizeTimer) clearTimeout(resizeTimer)
     resizeTimer = window.setTimeout(() => {
+      updateContainerWidth()
       if (msnry) {
         msnry.destroy()
         msnry = null
       }
       initMasonry()
-    }, 200)
+    }, 250)
   })
 })
 
-// 监听照片变化
+onUnmounted(() => {
+  if (msnry) {
+    msnry.destroy()
+    msnry = null
+  }
+})
+
 watch(() => props.photos, async () => {
   await nextTick()
-  setTimeout(reloadMasonry, 100)
+  setTimeout(reloadMasonry, 150)
 }, { deep: true })
 </script>
 
 <style scoped>
 .masonry {
   width: 100%;
+  margin: 0 auto;
   position: relative;
   box-sizing: border-box;
-  margin-top: 0.5rem;
-  padding-right: 6px;
-  overflow-x: hidden;
 }
 
 .item {
-  background: white;
-  border-radius: 10px;
+  background: #FAFAFA;
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 20px 20px rgba(0, 0, 0, 0.1);
-  transition: all 0.4s ease, opacity 0.3s, transform 0.3s;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.06),
+    0 4px 12px rgba(0,0,0,0.06);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
-  width: calc(50% - 15px);
   box-sizing: border-box;
-  margin: 3px;
+  margin: 4px;
   opacity: 1;
+  border: 1px solid rgba(201, 169, 110, 0.15);
+  /* 不要改 */
+  width: calc((100% - 30px) / 4);
 }
 
 .item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 25px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px) rotate(-0.5deg);
+  box-shadow:
+    0 8px 16px rgba(0,0,0,0.1),
+    0 16px 32px rgba(139, 69, 87, 0.12);
+  border-color: rgba(201, 169, 110, 0.4);
 }
 
 .food-image {
@@ -180,12 +189,14 @@ watch(() => props.photos, async () => {
   position: absolute;
   right: 0.5rem;
   top: 0.5rem;
-  color: #333333;
-  background: rgba(245, 233, 217, 0.5);
+  color: #fff;
+  background: linear-gradient(135deg, #8B4557, #A65D6A);
   border-radius: 50%;
-  padding: 0.2rem;
-  font-size: 0.6rem;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.65rem;
   z-index: 10;
+  font-family: Georgia, serif;
+  box-shadow: 0 2px 6px rgba(139, 69, 87, 0.3);
 }
 
 .food-content {
@@ -193,45 +204,50 @@ watch(() => props.photos, async () => {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: 0.5rem;
+  padding: 0.6rem 0.5rem;
 }
 
 .food-country {
   position: absolute;
-  right: 0.3rem;
-  top: -1.3rem;
+  right: 0.4rem;
+  top: -1.4rem;
   z-index: 99;
-  color: #333333;
+  color: #8B4557;
   display: inline-block;
-  background: rgba(245, 233, 217, 0.5);
-  padding: 0.2rem 0.3rem;
+  background: rgba(250, 245, 239, 0.95);
+  padding: 0.2rem 0.4rem;
   border-radius: 10px;
   font-size: 0.6rem;
+  font-family: Georgia, serif;
+  border: 1px dashed #C9A96E;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .food-title {
-  padding: 0.2rem 0.5rem;
-  font-size: 1rem;
+  padding: 0.15rem 0.3rem;
+  font-size: 0.95rem;
   font-weight: 400;
-  margin-bottom: 5px;
-  color: #8b4513;
-  line-height: 1.1;
-  margin-top: 5px;
+  margin: 0;
+  color: #8B4557;
+  line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-family: Georgia, serif;
 }
 
-/* 响应式 - 根据视口宽度固定列宽 */
-@media (min-width: 1200px) {
+/* 响应式调整 */
+@media (max-width: 900px) {
   .item {
-    width: calc(25% - 15px);
+    /* 不要改 */
+    width: calc((100% - 24px) / 3);
   }
 }
 
-@media (min-width: 768px) and (max-width: 1199px) {
+@media (max-width: 600px) {
   .item {
-    width: calc(33% - 15px);
+    /* 不要改 */
+    width: calc((100% - 15px) / 2);
   }
 }
 </style>
