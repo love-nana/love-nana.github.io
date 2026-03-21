@@ -59,34 +59,34 @@ function goToEdit() {
 <style scoped>
 .category-header {
   background: rgba(250, 245, 239, 0.95);
-  padding: 12px 0;
-  position: sticky;
-  top: 8px;
+  padding: 6px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   box-shadow: 0 2px 12px rgba(139, 69, 87, 0.08);
   border-bottom: 1px solid rgba(201, 169, 110, 0.2);
-  margin: 0 8px;
-  border-radius: 0 0 12px 12px;
 }
 
 .categories-container {
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  gap: 10px;
+  padding: 0 8px;
+  gap: 6px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .entry-edit-btn {
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #8B4557, #A65D6A);
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   color: #fff;
   transition: all 0.3s ease;
@@ -100,7 +100,7 @@ function goToEdit() {
 
 .categories {
   display: flex;
-  gap: 8px;
+  gap: 5px;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -113,18 +113,18 @@ function goToEdit() {
 
 .category-btn {
   flex-shrink: 0;
-  padding: 8px 16px;
+  padding: 5px 10px;
   border: 1px solid rgba(201, 169, 110, 0.3);
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.8);
   color: #8B4557;
-  font-size: 13px;
+  font-size: 12px;
   font-family: Georgia, serif;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .category-btn:hover {

@@ -201,9 +201,8 @@ watch(() => props.photos, async () => {
   box-sizing: border-box;
   margin: 2px;
   opacity: 1;
-  border: 1px solid rgba(201, 169, 110, 0.15);
   /* 不要改 */
-  width: calc((100% - 28px) / 4);
+  width: calc((100% - 30px) / 4);
 }
 
 .item:hover {
@@ -211,7 +210,6 @@ watch(() => props.photos, async () => {
   box-shadow:
     0 8px 16px rgba(0,0,0,0.1),
     0 16px 32px rgba(139, 69, 87, 0.12);
-  border-color: rgba(201, 169, 110, 0.4);
 }
 
 .food-image {
@@ -239,22 +237,21 @@ watch(() => props.photos, async () => {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: 0.6rem 0.5rem;
+  padding: 0.4rem 0.4rem 0.3rem;
 }
 
 .food-country {
   position: absolute;
   right: 0.4rem;
-  top: -1.4rem;
+  top: -1.7rem;
   z-index: 99;
   color: #8B4557;
   display: inline-block;
-  background: rgba(250, 245, 239, 0.95);
+  background: rgba(250, 245, 239, 0.9);
   padding: 0.2rem 0.4rem;
   border-radius: 10px;
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   font-family: Georgia, serif;
-  border: 1px dashed #C9A96E;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
@@ -275,14 +272,14 @@ watch(() => props.photos, async () => {
 @media (max-width: 900px) {
   .item {
     /* 不要改 */
-    width: calc((100% - 12px) / 3);
+    width: calc((100% - 25px) / 3);
   }
 }
 
 @media (max-width: 600px) {
   .item {
     /* 不要改 */
-    width: calc((100% - 8px) / 2);
+    width: calc((100% - 16px) / 2);
   }
 }
 

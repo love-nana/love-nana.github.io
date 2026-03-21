@@ -28,7 +28,7 @@ body {
 }
 
 /* 丝带顶部装饰 */
-.gallery-page::before {
+/*.gallery-page::before {
     content: "";
     position: fixed;
     top: 0;
@@ -37,7 +37,7 @@ body {
     height: 8px;
     background: linear-gradient(90deg, var(--burgundy), var(--burgundy-light), var(--gold), var(--burgundy-light), var(--burgundy));
     z-index: 100;
-}
+}*/
 
 .gallery-content {
     padding: 15px 8px 20px;
