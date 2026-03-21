@@ -14,7 +14,9 @@
       "Bash(curl -s http://localhost:5175/src/pages/index/App.vue)",
       "Bash(curl:*)",
       "Bash(xargs kill:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(pkill -f \"vite preview\")",
+      "Bash(pkill -f \"vite\")"
     ]
   },
   "sandbox": {

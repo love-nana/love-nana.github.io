@@ -271,10 +271,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import dogeIcon from '../../../imgs/doge.png'
-import smileIcon from '../../../imgs/smile.png'
-import emmIcon from '../../../imgs/emoji_emm.png'
-import cryIcon from '../../../imgs/cry.png'
+import dogeIcon from '../../assets/imgs/doge.png'
+import smileIcon from '../../assets/imgs/smile.png'
+import emmIcon from '../../assets/imgs/emoji_emm.png'
+import cryIcon from '../../assets/imgs/cry.png'
 
 const audioRef = ref<HTMLAudioElement>()
 const isPlaying = ref(false)
