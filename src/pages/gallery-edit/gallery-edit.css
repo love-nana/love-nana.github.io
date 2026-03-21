@@ -149,6 +149,28 @@ h1 {
     transform: translateY(-2px);
 }
 
+.btn-append-pic {
+    padding: 8px 16px;
+    background: var(--cream-dark);
+    color: var(--burgundy);
+    border: 1px solid rgba(201, 169, 110, 0.4);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: Georgia, serif;
+}
+
+.btn-append-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.btn-append-pic:hover {
+    background: var(--gold-light);
+    border-color: var(--gold);
+}
+
 .close-edit-btn {
     font-size: 1.8rem;
     color: var(--dusty-rose);
@@ -451,6 +473,10 @@ textarea.form-control {
     background: rgba(250, 245, 239, 0.8);
 }
 
+.upload-preview.active {
+    display: block;
+}
+
 .edit-preview {
     margin-top: 10px;
     border: 1px solid rgba(201, 169, 110, 0.2);
@@ -644,4 +670,236 @@ textarea, input {
     .drop-zone {
         display: block;
     }
+}
+
+/* ========================
+   合并的样式 - load-more.css
+   ======================== */
+.load-more-loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: var(--gold);
+}
+
+.load-more-loading.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.load-more-loading .load-more-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(201, 169, 110, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--gold);
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.load-more-end-message {
+    text-align: center;
+    padding: 20px;
+    color: var(--gold);
+    font-size: 14px;
+    font-family: Georgia, serif;
+}
+
+/* ========================
+   合并的样式 - loading.css
+   ======================== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(44, 44, 44, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.loading-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loading-spinner {
+    width: 80px;
+    height: 80px;
+    position: relative;
+}
+
+.spinner-circle {
+    width: 100%;
+    height: 100%;
+    border: 5px solid rgba(201, 169, 110, 0.3);
+    border-top: 5px solid var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: var(--cream);
+    font-family: Georgia, serif;
+}
+
+/* ========================
+   合并的样式 - msg-form (原login.css)
+   ======================== */
+.msg-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(44, 44, 44, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.msg-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.msg-modal {
+    background: var(--cream);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2), 0 0 0 1px rgba(201, 169, 110, 0.3);
+    width: 90%;
+    max-width: 380px;
+    overflow: hidden;
+    transform: translateY(-50px);
+    transition: transform 0.4s ease;
+}
+
+.msg-modal-overlay.active .msg-modal {
+    transform: translateY(0);
+}
+
+.msg-modal-header {
+    margin-bottom: 25px;
+    text-align: center;
+    padding: 20px 24px;
+    border-bottom: 1px dashed var(--gold);
+}
+
+.msg-modal-header h2 {
+    color: var(--burgundy);
+    font-size: 1.3rem;
+    font-family: Georgia, serif;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.msg-form {
+    padding: 24px;
+}
+
+.msg-form-group {
+    margin-bottom: 18px;
+    text-align: left;
+    position: relative;
+}
+
+.msg-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    color: var(--burgundy);
+    font-family: Georgia, serif;
+}
+
+.msg-modal input[type="text"],
+.msg-modal input[type="password"],
+.msg-modal select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid rgba(201, 169, 110, 0.4);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+    background: rgba(255, 255, 255, 0.8);
+    font-family: Georgia, serif;
+}
+
+.msg-modal input[type="text"]:focus,
+.msg-modal input[type="password"]:focus {
+    border-color: var(--burgundy);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(139, 69, 87, 0.15);
+}
+
+.msg-error-message {
+    color: #c0392b;
+    font-size: 0.8rem;
+    margin-top: 6px;
+    display: none;
+}
+
+.msg-error-message:not(:empty) {
+    display: block;
+}
+
+.msg-form-footer {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+}
+
+.login-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-family: Georgia, serif;
+}
+
+.login-btn-secondary {
+    background: var(--cream-dark);
+    color: var(--burgundy);
+    border: 1px solid rgba(201, 169, 110, 0.3);
+}
+
+.login-btn-secondary:hover {
+    background: var(--gold-light);
+    color: var(--burgundy);
+    transform: translateY(-2px);
+}
+
+.login-btn-cancel {
+    background: linear-gradient(135deg, var(--burgundy), var(--burgundy-light));
+    color: white;
+    box-shadow: 0 3px 10px rgba(139, 69, 87, 0.25);
+}
+
+.login-btn-cancel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(139, 69, 87, 0.35);
 }

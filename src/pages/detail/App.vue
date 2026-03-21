@@ -66,7 +66,7 @@ const displayDate = computed(() => {
 // 格式化描述
 const formattedDesc = computed(() => {
   if (!food.value?.desc) return ''
-  return food.value.desc.split('\n').join('<br/>')
+  return food.value.desc.replace(/\r\n/g, '\n').replace(/\n/g, '<br/>')
 })
 
 // 加载图片
