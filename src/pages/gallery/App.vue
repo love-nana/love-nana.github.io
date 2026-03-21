@@ -2,8 +2,9 @@
   <div class="gallery-page">
     <!-- 分类筛选 -->
     <CategoryFilter
-      v-model="galleryStore.currentCategory"
+      :model-value="galleryStore.currentCategory"
       show-edit
+      @update:model-value="onCategoryChange"
       @edit="goToEdit"
     />
 
@@ -12,6 +13,7 @@
       <MasonryGrid
         :photos="galleryStore.displayedPhotos"
         :is-reloading="isReloading"
+        :reload-key="reloadKey"
         @select="showDetail"
       />
     </div>
@@ -46,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted } from 'vue'
+import { onMounted, ref, onUnmounted, watch } from 'vue'
 import CategoryFilter from '@/components/CategoryFilter.vue'
 import MasonryGrid from '@/components/MasonryGrid.vue'
 import CosLoginModal from '@/components/CosLoginModal.vue'
@@ -56,7 +58,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useGalleryStore } from '@/stores/gallery'
 import { useUiStore } from '@/stores/ui'
 import { useCos } from '@/composables/useCos'
-import type { Photo } from '@/types'
+import type { Photo, Category } from '@/types'
 
 const authStore = useAuthStore()
 const galleryStore = useGalleryStore()
@@ -66,7 +68,19 @@ const { loadPhotos, getPhotoUrls } = useCos()
 const showLogin = ref(false)
 const isLoadingMore = ref(false)
 const isReloading = ref(false)
+const reloadKey = ref(0)
 let scrollHandler: (() => void) | null = null
+
+// 分类切换时立即显示遮罩
+function onCategoryChange(category: Category) {
+  isReloading.value = true
+  galleryStore.setCategory(category)
+  reloadKey.value++
+  // 1秒后关闭遮罩
+  setTimeout(() => {
+    isReloading.value = false
+  }, 1000)
+}
 
 // 加载照片
 async function fetchPhotos() {
@@ -188,7 +202,7 @@ body {
 }
 
 .gallery-content {
-  padding-top: 50px;
+  padding: 0 !important;
 }
 
 .empty-state {

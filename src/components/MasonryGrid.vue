@@ -1,6 +1,6 @@
 <template>
   <div class="masonry-wrapper">
-    <div ref="container" class="masonry" :style="masonryStyle">
+    <div ref="container" class="masonry" :style="masonryStyle" :class="{ 'is-ready': isLayoutReady }">
       <div
         v-for="photo in photos"
         :key="photo.id"
@@ -29,9 +29,9 @@
       </div>
     </div>
 
-    <!-- 加载遮罩（仅重新加载/加载更多时显示） -->
+    <!-- 加载遮罩 -->
     <Transition name="fade">
-      <div v-if="isReloading" class="loading-overlay">
+      <div v-if="isReloading || isReloadingFilter || (!isLayoutReady && photos.length > 0)" class="loading-overlay">
         <div class="loading-spinner"></div>
       </div>
     </Transition>
@@ -47,6 +47,7 @@ import type { Photo } from '@/types'
 const props = defineProps<{
   photos: Photo[]
   isReloading?: boolean  // 是否是重新加载（加载更多），true 时显示遮罩
+  reloadKey?: number     // 分类切换时递增，强制触发重新加载
 }>()
 
 defineEmits<{
@@ -55,6 +56,8 @@ defineEmits<{
 
 const container = ref<HTMLElement>()
 const containerWidth = ref(1200)
+const isLayoutReady = ref(false)
+const isReloadingFilter = ref(false)
 let msnry: Masonry | null = null
 
 // 计算列数和列宽
@@ -108,6 +111,8 @@ function initMasonry() {
       transitionDuration: '0.4s',
       stamp: '.masonry-stamp',
     })
+
+    isLayoutReady.value = true
   }
 
   // 图片加载完成后初始化
@@ -122,7 +127,13 @@ function initMasonry() {
 }
 
 function reloadMasonry() {
-  if (!container.value || !msnry) return
+  if (!container.value) return
+
+  // 如果还没初始化，先初始化
+  if (!msnry) {
+    initMasonry()
+    return
+  }
 
   // 禁用 Masonry 动画
   ;(msnry as any).options.transitionDuration = 0
@@ -133,6 +144,10 @@ function reloadMasonry() {
     msnry.layout()
     // 布局完成后恢复 Masonry 动画
     ;(msnry as any).options.transitionDuration = 400
+    // 1秒后关闭遮罩
+    setTimeout(() => {
+      isReloadingFilter.value = false
+    }, 1000)
   }
 
   imagesLoaded(container.value, () => {
@@ -171,6 +186,11 @@ onUnmounted(() => {
 })
 
 watch(() => props.photos, async () => {
+  // 如果 Masonry 已经初始化过，说明是分类切换，需要显示遮罩
+  if (msnry && isLayoutReady.value) {
+    isReloadingFilter.value = true
+  }
+
   // 等待 DOM 更新
   await nextTick()
 
@@ -179,6 +199,24 @@ watch(() => props.photos, async () => {
     reloadMasonry()
   })
 }, { deep: true })
+
+// 监听 reloadKey 变化（分类切换）
+watch(() => props.reloadKey, () => {
+  if (msnry && isLayoutReady.value) {
+    isReloadingFilter.value = true
+  }
+  nextTick(() => reloadMasonry())
+})
+
+// 监听 isReloading prop 变化（父组件触发的分类切换遮罩）
+watch(() => props.isReloading, (newVal) => {
+  if (newVal) {
+    isReloadingFilter.value = true
+    nextTick(() => reloadMasonry())
+  } else {
+    isReloadingFilter.value = false
+  }
+})
 </script>
 
 <style scoped>
@@ -187,6 +225,12 @@ watch(() => props.photos, async () => {
   margin: 0 auto;
   position: relative;
   box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.masonry.is-ready {
+  opacity: 1;
 }
 
 .item {
@@ -286,19 +330,20 @@ watch(() => props.photos, async () => {
 /* 加载遮罩 */
 .masonry-wrapper {
   position: relative;
+  padding-top: 10px;
 }
 
 .loading-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(248, 249, 250, 0.7);
+  background: rgba(248, 249, 250, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 1000;
   border-radius: 8px;
 }
 

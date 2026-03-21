@@ -31,7 +31,7 @@
     </div>
 
     <!-- 分类   -->
-    <CategoryFilter v-model="currentCategoryFilter" />
+    <CategoryFilter v-model="currentCategoryFilter" :fixed="false" />
 
     <div class="gallery" id="imageGallery">
         <div v-if="images.length === 0" class="empty-state">

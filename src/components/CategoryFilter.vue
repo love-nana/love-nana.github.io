@@ -1,5 +1,5 @@
 <template>
-  <header class="category-header">
+  <header :class="['category-header', { 'is-fixed': fixed !== false }]">
     <div class="categories-container">
       <!-- 编辑入口按钮 -->
       <div v-if="showEdit" class="entry-edit-btn" @click="goToEdit">
@@ -30,6 +30,7 @@ import type { Category, CategoryConfig } from '@/types'
 const props = defineProps<{
   modelValue: Category
   showEdit?: boolean
+  fixed?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -60,13 +61,16 @@ function goToEdit() {
 .category-header {
   background: rgba(250, 245, 239, 0.95);
   padding: 6px 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(139, 69, 87, 0.08);
+  border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+}
+
+.category-header.is-fixed {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
-  box-shadow: 0 2px 12px rgba(139, 69, 87, 0.08);
-  border-bottom: 1px solid rgba(201, 169, 110, 0.2);
 }
 
 .categories-container {
