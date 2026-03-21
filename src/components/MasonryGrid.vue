@@ -1,31 +1,40 @@
 <template>
-  <div ref="container" class="masonry" :style="masonryStyle">
-    <div
-      v-for="photo in photos"
-      :key="photo.id"
-      class="item"
-      @click="$emit('select', photo)"
-    >
-      <!-- 多图标记 -->
-      <div v-if="photo.images && photo.images.length > 1" class="pic-num">
-        P{{ photo.images.length }}
-      </div>
+  <div class="masonry-wrapper">
+    <div ref="container" class="masonry" :style="masonryStyle">
+      <div
+        v-for="photo in photos"
+        :key="photo.id"
+        class="item"
+        @click="$emit('select', photo)"
+      >
+        <!-- 多图标记 -->
+        <div v-if="photo.images && photo.images.length > 1" class="pic-num">
+          P{{ photo.images.length }}
+        </div>
 
-      <!-- 图片 -->
-      <img
-        v-if="photo.imageUrl"
-        :src="`${photo.imageUrl}&imageMogr2/quality/30`"
-        :alt="photo.title"
-        class="food-image"
-        loading="lazy"
-      />
+        <!-- 图片 -->
+        <img
+          v-if="photo.imageUrl"
+          :src="`${photo.imageUrl}&imageMogr2/quality/30`"
+          :alt="photo.title"
+          class="food-image"
+          loading="lazy"
+        />
 
-      <!-- 内容区 -->
-      <div class="food-content">
-        <span v-if="photo.date" class="food-country">{{ photo.date }}</span>
-        <h3 v-if="photo.title" class="food-title">{{ photo.title }}</h3>
+        <!-- 内容区 -->
+        <div class="food-content">
+          <span v-if="photo.date" class="food-country">{{ photo.date }}</span>
+          <h3 v-if="photo.title" class="food-title">{{ photo.title }}</h3>
+        </div>
       </div>
     </div>
+
+    <!-- 加载遮罩 -->
+    <Transition name="fade">
+      <div v-if="isLoading" class="loading-overlay">
+        <div class="loading-spinner"></div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -45,6 +54,7 @@ defineEmits<{
 
 const container = ref<HTMLElement>()
 const containerWidth = ref(1200)
+const isLoading = ref(false)
 let msnry: Masonry | null = null
 
 // 计算列数和列宽
@@ -105,13 +115,23 @@ function initMasonry() {
 }
 
 function reloadMasonry() {
-  if (!container.value) return
+  if (!container.value || !msnry) return
+
+  // 禁用 Masonry 动画
+  ;(msnry as any).options.transitionDuration = 0
 
   imagesLoaded(container.value, () => {
     if (!container.value || !msnry) return
 
     msnry.reloadItems()
     msnry.layout()
+
+    // 布局完成后恢复 Masonry 动画
+    ;(msnry as any).options.transitionDuration = 400
+
+    setTimeout(() => {
+      isLoading.value = false
+    }, 50)
   })
 }
 
@@ -141,8 +161,16 @@ onUnmounted(() => {
 })
 
 watch(() => props.photos, async () => {
+  // 立即显示遮罩
+  isLoading.value = true
+
+  // 等待 DOM 更新
   await nextTick()
-  setTimeout(reloadMasonry, 150)
+
+  // 短暂延迟确保遮罩已渲染
+  requestAnimationFrame(() => {
+    reloadMasonry()
+  })
 }, { deep: true })
 </script>
 
@@ -249,5 +277,49 @@ watch(() => props.photos, async () => {
     /* 不要改 */
     width: calc((100% - 15px) / 2);
   }
+}
+
+/* 加载遮罩 */
+.masonry-wrapper {
+  position: relative;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(248, 249, 250, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 8px;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(201, 169, 110, 0.2);
+  border-top-color: #C9A96E;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 淡入淡出过渡 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

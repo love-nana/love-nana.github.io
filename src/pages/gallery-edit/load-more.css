@@ -1,7 +1,15 @@
 .load-more-loading {
+    display: none;
     text-align: center;
     padding: 20px;
     color: #7f8c8d;
+}
+
+.load-more-loading.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .load-more-loading .load-more-spinner {

@@ -229,6 +229,12 @@ h1 {
     padding: 12px 15px;
 }
 
+.single-line-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .image-title {
     font-size: 1rem;
     font-weight: 500;
@@ -241,6 +247,13 @@ h1 {
     color: var(--ink);
     opacity: 0.7;
     font-size: 0.85rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+    max-height: 7.5em;
 }
 
 .image-actions {
