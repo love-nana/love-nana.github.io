@@ -205,16 +205,13 @@ export function useEditModal(
 
   function handleAppendPicTouchEnd(e: TouchEvent) {
     if (!draggedPreviewElement) {
-      console.log('[handleAppendPicTouchEnd] draggedPreviewElement is null')
       return
     }
     e.preventDefault()
     e.stopPropagation()
-    console.log('[handleAppendPicTouchEnd] draggedPreviewElement exists:', draggedPreviewElement)
 
     // Collision detection
     const elements = Array.from(document.querySelectorAll('#editPreviewList .preview-item:not(.dragging)'))
-    console.log('[handleAppendPicTouchEnd] elements count:', elements.length)
     const draggedRect = draggedPreviewElement.getBoundingClientRect()
     let swapElement: HTMLElement | null = null
 
@@ -237,8 +234,6 @@ export function useEditModal(
         }
       }
     }
-
-    console.log('[handleAppendPicTouchEnd] swapElement:', swapElement)
 
     if (swapElement && swapElement !== draggedPreviewElement) {
       const fromIndex = parseInt(draggedPreviewElement.dataset.index || '-1')

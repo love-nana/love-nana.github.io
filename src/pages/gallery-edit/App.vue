@@ -1,9 +1,5 @@
 <template>
 <div class="container">
-    <!-- 构建时间角标 -->
-    <div class="build-time-badge" title="代码构建时间">&#x23F0; {{ buildTime }}</div>
-    <!-- 调试角标 -->
-    <div class="debug-badge" v-if="debugInfo">{{ debugInfo }}</div>
     <div class="header-bg" id="header-bg" @click="goToGallery"></div>
     <div class="actions">
         <button class="fit-btn btn-secondary" id="addImageBtn" @click="imageUpload.triggerFileInput">
@@ -194,13 +190,6 @@ import type { Category } from '@/types'
 const uiStore = useUiStore()
 const authStore = useAuthStore()
 
-// 构建时间（由 Vite 注入）
-declare const __BUILD_TIME__: string
-const buildTime = typeof __BUILD_TIME__ !== 'undefined' ? __BUILD_TIME__ : 'dev'
-
-// 调试信息
-const debugInfo = ref('')
-
 // COS
 const { getPhotoUrl, getPhotoUrls, uploadPhotos, uploadJson, loadJson } = useCos()
 
@@ -241,25 +230,18 @@ watch(currentCategoryFilter, () => {
 
 // 直接在每个 .image-card 元素上绑定 touch 事件（参考 gallery-edit.js）
 function addImageCardMoveEvent() {
-  debugInfo.value = 'addImageCardMoveEvent called'
   const cards = document.querySelectorAll('.image-card')
-  debugInfo.value = 'cards count: ' + cards.length
   cards.forEach(card => {
     card.addEventListener('touchstart', (e) => {
-      debugInfo.value = 'touchstart'
       dragDrop.handleTouchStart(e as TouchEvent)
     }, { passive: false })
     card.addEventListener('touchmove', (e) => {
-      debugInfo.value = 'touchmove: drag=' + !!dragDrop.draggedElement.value
       dragDrop.handleTouchMove(e as TouchEvent)
     }, { passive: false })
     card.addEventListener('touchend', (e) => {
-      debugInfo.value = 'touchend'
       dragDrop.handleTouchEnd(e as TouchEvent)
-      setTimeout(() => { debugInfo.value = '' }, 1000)
     })
     card.addEventListener('touchcancel', (e) => {
-      debugInfo.value = 'touchcancel'
       dragDrop.handleTouchEnd(e as TouchEvent)
     })
   })
@@ -267,25 +249,18 @@ function addImageCardMoveEvent() {
 
 // 编辑弹窗内预览图片的 touch 事件绑定
 function addPreviewItemMoveEvent() {
-  debugInfo.value = 'addPreviewItemMoveEvent called'
   const previewItems = document.querySelectorAll('#editPreviewList .preview-item')
-  debugInfo.value = 'preview items count: ' + previewItems.length
   previewItems.forEach(item => {
     item.addEventListener('touchstart', (e) => {
-      debugInfo.value = 'preview-touchstart'
       editModal.handleAppendPicTouchStart(e as TouchEvent)
     }, { passive: false })
     item.addEventListener('touchmove', (e) => {
-      debugInfo.value = 'preview-touchmove'
       editModal.handleAppendPicTouchMove(e as TouchEvent)
     }, { passive: false })
     item.addEventListener('touchend', (e) => {
-      debugInfo.value = 'preview-touchend'
       editModal.handleAppendPicTouchEnd(e as TouchEvent)
-      setTimeout(() => { debugInfo.value = '' }, 1000)
     })
     item.addEventListener('touchcancel', (e) => {
-      debugInfo.value = 'preview-touchcancel'
       editModal.handleAppendPicTouchEnd(e as TouchEvent)
     })
   })
@@ -295,10 +270,8 @@ function addPreviewItemMoveEvent() {
 watch(
   displayedImages,
   async () => {
-    debugInfo.value = 'watch displayedImages triggered'
     await nextTick()
     addImageCardMoveEvent()
-    debugInfo.value = 'addImageCardMoveEvent called'
   },
   { immediate: true }
 )

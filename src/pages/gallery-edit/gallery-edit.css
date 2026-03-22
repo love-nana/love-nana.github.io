@@ -34,34 +34,6 @@ body {
     max-width: 1200px;
 }
 
-.build-time-badge {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: rgba(139, 69, 87, 0.9);
-    color: #fff;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    z-index: 10000;
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.debug-badge {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.8);
-    color: #0f0;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-family: monospace;
-    z-index: 10000;
-    pointer-events: none;
-}
-
 /* 顶部丝带 */
 header {
     text-align: center;
