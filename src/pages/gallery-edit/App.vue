@@ -241,7 +241,9 @@ watch(currentCategoryFilter, () => {
 
 // 直接在每个 .image-card 元素上绑定 touch 事件（参考 gallery-edit.js）
 function addImageCardMoveEvent() {
+  debugInfo.value = 'addImageCardMoveEvent called'
   const cards = document.querySelectorAll('.image-card')
+  debugInfo.value = 'cards count: ' + cards.length
   cards.forEach(card => {
     card.addEventListener('touchstart', (e) => {
       debugInfo.value = 'touchstart'
@@ -265,7 +267,9 @@ function addImageCardMoveEvent() {
 
 // 编辑弹窗内预览图片的 touch 事件绑定
 function addPreviewItemMoveEvent() {
+  debugInfo.value = 'addPreviewItemMoveEvent called'
   const previewItems = document.querySelectorAll('#editPreviewList .preview-item')
+  debugInfo.value = 'preview items count: ' + previewItems.length
   previewItems.forEach(item => {
     item.addEventListener('touchstart', (e) => {
       debugInfo.value = 'preview-touchstart'
@@ -291,8 +295,10 @@ function addPreviewItemMoveEvent() {
 watch(
   displayedImages,
   async () => {
+    debugInfo.value = 'watch displayedImages triggered'
     await nextTick()
     addImageCardMoveEvent()
+    debugInfo.value = 'addImageCardMoveEvent called'
   },
   { immediate: true }
 )
@@ -496,8 +502,10 @@ async function confirmUploadImages() {
 
 // 编辑模态框
 async function openEditModal(index: number) {
+  debugInfo.value = 'openEditModal called'
   editModal.openEditModal(index, getPhotoUrls)
   await nextTick()
+  debugInfo.value = 'after nextTick'
   addPreviewItemMoveEvent()
 }
 
