@@ -62,6 +62,9 @@ function flattenHtmlOutput(distDir: string, pagesDir: string) {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    __BUILD_TIME__: JSON.stringify(new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })),
+  },
   plugins: [
     vue(),
     devPageRewritePlugin(),

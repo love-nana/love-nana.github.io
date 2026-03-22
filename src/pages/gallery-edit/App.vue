@@ -1,5 +1,7 @@
 <template>
 <div class="container">
+    <!-- 构建时间角标 -->
+    <div class="build-time-badge" title="代码构建时间">&#x23F0; {{ buildTime }}</div>
     <div class="header-bg" id="header-bg" @click="goToGallery"></div>
     <div class="actions">
         <button class="fit-btn btn-secondary" id="addImageBtn" @click="imageUpload.triggerFileInput">
@@ -196,6 +198,10 @@ import type { Category } from '@/types'
 // Stores
 const uiStore = useUiStore()
 const authStore = useAuthStore()
+
+// 构建时间（由 Vite 注入）
+declare const __BUILD_TIME__: string
+const buildTime = typeof __BUILD_TIME__ !== 'undefined' ? __BUILD_TIME__ : 'dev'
 
 // COS
 const { getPhotoUrl, getPhotoUrls, uploadPhotos, uploadJson, loadJson } = useCos()
