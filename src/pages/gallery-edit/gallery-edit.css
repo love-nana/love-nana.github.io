@@ -201,6 +201,7 @@ h1 {
     position: relative;
     border: 1px solid rgba(201, 169, 110, 0.15);
     will-change: transform;
+    touch-action: none;
 }
 
 .image-card:hover {
@@ -520,6 +521,7 @@ textarea.form-control {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    touch-action: none;
     background: var(--cream-dark);
 }
 
