@@ -250,11 +250,11 @@ function addImageCardMoveEvent() {
     card.addEventListener('touchstart', (e) => {
       debugInfo.value = 'touchstart'
       dragDrop.handleTouchStart(e as TouchEvent)
-    }, { passive: true })
+    }, { passive: false })
     card.addEventListener('touchmove', (e) => {
       debugInfo.value = 'touchmove: drag=' + !!dragDrop.draggedElement.value
       dragDrop.handleTouchMove(e as TouchEvent)
-    }, { passive: true })
+    }, { passive: false })
     card.addEventListener('touchend', (e) => {
       debugInfo.value = 'touchend'
       dragDrop.handleTouchEnd(e as TouchEvent)

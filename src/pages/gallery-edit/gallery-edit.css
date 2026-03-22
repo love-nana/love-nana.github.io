@@ -229,7 +229,6 @@ h1 {
     position: relative;
     border: 1px solid rgba(201, 169, 110, 0.15);
     will-change: transform;
-    touch-action: none;
 }
 
 .image-card:hover {
