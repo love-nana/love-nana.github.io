@@ -312,6 +312,17 @@ watch(
   { immediate: true, deep: true }
 )
 
+// 监听编辑弹窗预览图片变化，DOM 更新后绑定 touch 事件
+watch(
+  () => editModal.editImages.value.length,
+  async (newLen) => {
+    if (newLen > 0) {
+      await nextTick()
+      addPreviewItemMoveEvent()
+    }
+  }
+)
+
 // 加载更多
 function loadMore() {
   if (!canLoadMore.value || isLoadingMore.value) return
@@ -501,12 +512,8 @@ async function confirmUploadImages() {
 }
 
 // 编辑模态框
-async function openEditModal(index: number) {
-  debugInfo.value = 'openEditModal called'
+function openEditModal(index: number) {
   editModal.openEditModal(index, getPhotoUrls)
-  await nextTick()
-  debugInfo.value = 'after nextTick'
-  addPreviewItemMoveEvent()
 }
 
 async function handleSubmitEdit() {
