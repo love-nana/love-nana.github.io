@@ -1,25 +1,3 @@
-declare module 'masonry-layout' {
-  export interface MasonryOptions {
-    itemSelector?: string
-    gutter?: number
-    fitWidth?: boolean
-    transitionDuration?: string
-    [key: string]: unknown
-  }
-
-  export default class Masonry {
-    constructor(element: Element | null, options?: MasonryOptions)
-    reloadItems(): void
-    layout(): void
-    destroy(): void
-  }
-}
-
-declare module 'imagesloaded' {
-  function imagesLoaded(element: Element | null, callback?: () => void): void
-  export default imagesLoaded
-}
-
 declare module 'pulltorefreshjs' {
   interface PullToRefreshOptions {
     mainElement?: string

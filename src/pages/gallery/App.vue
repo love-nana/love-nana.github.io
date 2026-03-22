@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted, watch } from 'vue'
+import { onMounted, ref, onUnmounted } from 'vue'
 import CategoryFilter from '@/components/CategoryFilter.vue'
 import MasonryGrid from '@/components/MasonryGrid.vue'
 import CosLoginModal from '@/components/CosLoginModal.vue'

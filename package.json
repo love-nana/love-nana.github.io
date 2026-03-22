@@ -16,15 +16,17 @@
     "chart.js": "^4.5.1",
     "cos-js-sdk-v5": "^1.10.1",
     "html2canvas": "^1.4.1",
-    "imagesloaded": "^5.0.0",
-    "masonry-layout": "^4.2.2",
     "pinia": "^3.0.4",
     "pulltorefreshjs": "^0.1.22",
-    "vue": "^3.5.30"
+    "vue": "^3.5.30",
+    "vue3-masonry-css": "^1.0.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@types/node": "^25.5.0",
     "@vitejs/plugin-vue": "^5.2.1",
+    "dotenv": "^17.3.1",
+    "playwright": "^1.58.2",
     "typescript": "^5.9.3",
     "vite": "^5.4.11",
     "vue-tsc": "^3.2.6"

@@ -1,10 +1,14 @@
 <template>
   <div class="masonry-wrapper">
-    <div ref="container" class="masonry" :style="masonryStyle" :class="{ 'is-ready': isLayoutReady }">
+    <MasonryGrid
+      :columns="{ default: 4, 900: 3, 600: 2 }"
+      :gutter="8"
+      class="masonry"
+    >
       <div
         v-for="photo in photos"
         :key="photo.id"
-        class="item"
+        class="item masonry-grid-item"
         @click="$emit('select', photo)"
       >
         <!-- 多图标记 -->
@@ -27,11 +31,11 @@
           <h3 v-if="photo.title" class="food-title">{{ photo.title }}</h3>
         </div>
       </div>
-    </div>
+    </MasonryGrid>
 
     <!-- 加载遮罩 -->
     <Transition name="fade">
-      <div v-if="isReloading || isReloadingFilter || (!isLayoutReady && photos.length > 0)" class="loading-overlay">
+      <div v-if="isReloading || isReloadingFilter || !isLayoutReady" class="loading-overlay">
         <div class="loading-spinner"></div>
       </div>
     </Transition>
@@ -39,180 +43,53 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick, computed, onUnmounted } from 'vue'
-import Masonry from 'masonry-layout'
-import imagesLoaded from 'imagesloaded'
+import { ref, watch, onMounted, nextTick } from 'vue'
+import { MasonryGrid } from 'vue3-masonry-css'
 import type { Photo } from '@/types'
 
 const props = defineProps<{
   photos: Photo[]
-  isReloading?: boolean  // 是否是重新加载（加载更多），true 时显示遮罩
-  reloadKey?: number     // 分类切换时递增，强制触发重新加载
+  isReloading?: boolean
+  reloadKey?: number
 }>()
 
 defineEmits<{
   (e: 'select', photo: Photo): void
 }>()
 
-const container = ref<HTMLElement>()
-const containerWidth = ref(1200)
 const isLayoutReady = ref(false)
 const isReloadingFilter = ref(false)
-let msnry: Masonry | null = null
-
-// 计算列数和列宽
-const columnConfig = computed(() => {
-  const width = containerWidth.value
-  const gutter = 4
-  const itemMargin = 6 // 3px * 2 for left+right
-
-  let cols = 4
-  let columnWidth = 280
-
-  if (width < 600) {
-    cols = 2
-    columnWidth = Math.floor((width - gutter - itemMargin) / 2)
-  } else if (width < 900) {
-    cols = 3
-    columnWidth = Math.floor((width - gutter * 2 - itemMargin) / 3)
-  } else {
-    cols = 4
-    columnWidth = Math.floor((width - gutter * 3 - itemMargin) / 4)
-  }
-
-  return { columnWidth, gutter, cols }
-})
-
-// Masonry容器的内联样式
-const masonryStyle = computed(() => ({}))
-
-function updateContainerWidth() {
-  if (container.value) {
-    containerWidth.value = container.value.offsetWidth
-  }
-}
-
-function initMasonry() {
-  if (!container.value) return
-
-  updateContainerWidth()
-
-  // 初始化 Masonry
-  const doInit = () => {
-    if (!container.value || msnry) return
-
-    containerWidth.value = container.value.offsetWidth
-
-    msnry = new Masonry(container.value, {
-      itemSelector: '.item',
-      columnWidth: columnConfig.value.columnWidth,
-      gutter: columnConfig.value.gutter,
-      percentPosition: true,
-      transitionDuration: '0.4s',
-      stamp: '.masonry-stamp',
-    })
-
-    isLayoutReady.value = true
-  }
-
-  // 图片加载完成后初始化
-  imagesLoaded(container.value, () => {
-    doInit()
-  })
-
-  // fallback：500ms 后无论图片加载状态如何都初始化（处理图片已缓存的情况）
-  setTimeout(() => {
-    doInit()
-  }, 500)
-}
-
-function reloadMasonry() {
-  if (!container.value) return
-
-  // 如果还没初始化，先初始化
-  if (!msnry) {
-    initMasonry()
-    return
-  }
-
-  // 禁用 Masonry 动画
-  ;(msnry as any).options.transitionDuration = 0
-
-  const doLayout = () => {
-    if (!container.value || !msnry) return
-    msnry.reloadItems()
-    msnry.layout()
-    // 布局完成后恢复 Masonry 动画
-    ;(msnry as any).options.transitionDuration = 400
-    // 1秒后关闭遮罩
-    setTimeout(() => {
-      isReloadingFilter.value = false
-    }, 1000)
-  }
-
-  imagesLoaded(container.value, () => {
-    doLayout()
-  })
-
-  // fallback：500ms 后无论图片加载状态如何都执行布局
-  setTimeout(() => {
-    doLayout()
-  }, 500)
-}
-
-let resizeTimer: number | null = null
 
 onMounted(() => {
-  initMasonry()
-
-  window.addEventListener('resize', () => {
-    if (resizeTimer) clearTimeout(resizeTimer)
-    resizeTimer = window.setTimeout(() => {
-      updateContainerWidth()
-      if (msnry) {
-        msnry.destroy()
-        msnry = null
-      }
-      initMasonry()
-    }, 250)
+  nextTick(() => {
+    isLayoutReady.value = true
   })
-})
-
-onUnmounted(() => {
-  if (msnry) {
-    msnry.destroy()
-    msnry = null
-  }
 })
 
 watch(() => props.photos, async () => {
-  // 如果 Masonry 已经初始化过，说明是分类切换，需要显示遮罩
-  if (msnry && isLayoutReady.value) {
+  if (isLayoutReady.value) {
     isReloadingFilter.value = true
   }
-
-  // 等待 DOM 更新
   await nextTick()
-
-  // 短暂延迟确保 DOM 已更新
-  requestAnimationFrame(() => {
-    reloadMasonry()
-  })
+  setTimeout(() => {
+    isReloadingFilter.value = false
+  }, 500)
 }, { deep: true })
 
-// 监听 reloadKey 变化（分类切换）
 watch(() => props.reloadKey, () => {
-  if (msnry && isLayoutReady.value) {
+  if (isLayoutReady.value) {
     isReloadingFilter.value = true
   }
-  nextTick(() => reloadMasonry())
+  nextTick(() => {
+    setTimeout(() => {
+      isReloadingFilter.value = false
+    }, 500)
+  })
 })
 
-// 监听 isReloading prop 变化（父组件触发的分类切换遮罩）
 watch(() => props.isReloading, (newVal) => {
   if (newVal) {
     isReloadingFilter.value = true
-    nextTick(() => reloadMasonry())
   } else {
     isReloadingFilter.value = false
   }
@@ -220,17 +97,14 @@ watch(() => props.isReloading, (newVal) => {
 </script>
 
 <style scoped>
+.masonry-wrapper {
+  position: relative;
+  padding-top: 10px;
+}
+
 .masonry {
   width: 100%;
   margin: 0 auto;
-  position: relative;
-  box-sizing: border-box;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.masonry.is-ready {
-  opacity: 1;
 }
 
 .item {
@@ -243,10 +117,8 @@ watch(() => props.isReloading, (newVal) => {
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   box-sizing: border-box;
-  margin: 2px;
+  min-height: 200px;
   opacity: 1;
-  /* 不要改 */
-  width: calc((100% - 30px) / 4);
 }
 
 .item:hover {
@@ -312,27 +184,7 @@ watch(() => props.isReloading, (newVal) => {
   font-family: Georgia, serif;
 }
 
-/* 响应式调整 */
-@media (max-width: 900px) {
-  .item {
-    /* 不要改 */
-    width: calc((100% - 25px) / 3);
-  }
-}
-
-@media (max-width: 600px) {
-  .item {
-    /* 不要改 */
-    width: calc((100% - 16px) / 2);
-  }
-}
-
 /* 加载遮罩 */
-.masonry-wrapper {
-  position: relative;
-  padding-top: 10px;
-}
-
 .loading-overlay {
   position: fixed;
   top: 0;

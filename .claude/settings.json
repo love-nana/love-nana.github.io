@@ -1,0 +1,93 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Glob",
+      "Grep",
+
+      "Bash(git status)",
+      "Bash(git diff)",
+      "Bash(git log)",
+      "Bash(git add)",
+      "Bash(git commit -m *)",
+      "Bash(git branch)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git pull)",
+      "Bash(git push)",
+      "Bash(yes)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npm install)",
+      "Bash(npm ci)",
+      "Bash(npm run *)",
+      "Bash(npm test)",
+      "Bash(npx *)",
+      "Bash(yarn)",
+      "Bash(yarn add *)",
+      "Bash(yarn remove *)",
+      "Bash(yarn run *)",
+      "Bash(pnpm install)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm remove *)",
+      "Bash(pnpm run *)",
+
+      "Bash(node *.js)",
+      "Bash(node scripts/*.js)",
+      "Bash(vite)",
+      "Bash(webpack)",
+      "Bash(eslint)",
+      "Bash(prettier)",
+      "Bash(stylelint)",
+      "Bash(tailwindcss)",
+
+      "Bash(ls)",
+      "Bash(head:*)",
+      "Bash(ls:*)",
+      "Bash(cat)",
+      "Bash(echo)",
+      "Bash(which *)",
+      "Bash(xargs kill:*)",
+      "Bash(kill:*)",
+      "Bash(pkill:*)",
+      "Bash(curl -s http://localhost:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:localhost)"
+    ],
+
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf .*)",
+      "Bash(rm -rf *)",
+
+      "Bash(git push --force)",
+      "Bash(git push -f)",
+      "Bash(git reset --hard)",
+      "Bash(git clean -fd)",
+
+      "Bash(curl * | bash)",
+      "Bash(wget * | sh)",
+      "Bash(curl * -o * | sh)",
+
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(> /etc/*)",
+      "Bash(> ~/.bashrc)"
+    ]
+  },
+
+  "network": {
+    "deny": [
+      "Bash(curl *)",
+      "Bash(wget *)"
+    ]
+  },
+
+  "sandbox": {
+    "enabled": true
+  }
+}
