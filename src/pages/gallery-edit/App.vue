@@ -2,6 +2,8 @@
 <div class="container">
     <!-- 构建时间角标 -->
     <div class="build-time-badge" title="代码构建时间">&#x23F0; {{ buildTime }}</div>
+    <!-- 调试角标 -->
+    <div class="debug-badge" v-if="debugInfo">{{ debugInfo }}</div>
     <div class="header-bg" id="header-bg" @click="goToGallery"></div>
     <div class="actions">
         <button class="fit-btn btn-secondary" id="addImageBtn" @click="imageUpload.triggerFileInput">
@@ -200,6 +202,9 @@ const authStore = useAuthStore()
 declare const __BUILD_TIME__: string
 const buildTime = typeof __BUILD_TIME__ !== 'undefined' ? __BUILD_TIME__ : 'dev'
 
+// 调试信息
+const debugInfo = ref('')
+
 // COS
 const { getPhotoUrl, getPhotoUrls, uploadPhotos, uploadJson, loadJson } = useCos()
 
@@ -242,10 +247,23 @@ watch(currentCategoryFilter, () => {
 function addImageCardMoveEvent() {
   const cards = document.querySelectorAll('.image-card')
   cards.forEach(card => {
-    card.addEventListener('touchstart', (e) => dragDrop.handleTouchStart(e as TouchEvent), { passive: false })
-    card.addEventListener('touchmove', (e) => dragDrop.handleTouchMove(e as TouchEvent), { passive: false })
-    card.addEventListener('touchend', (e) => dragDrop.handleTouchEnd(e as TouchEvent))
-    card.addEventListener('touchcancel', (e) => dragDrop.handleTouchEnd(e as TouchEvent))
+    card.addEventListener('touchstart', (e) => {
+      debugInfo.value = 'touchstart'
+      dragDrop.handleTouchStart(e as TouchEvent)
+    }, { passive: false })
+    card.addEventListener('touchmove', (e) => {
+      debugInfo.value = 'touchmove: drag=' + !!dragDrop.draggedElement.value
+      dragDrop.handleTouchMove(e as TouchEvent)
+    }, { passive: false })
+    card.addEventListener('touchend', (e) => {
+      debugInfo.value = 'touchend'
+      dragDrop.handleTouchEnd(e as TouchEvent)
+      setTimeout(() => { debugInfo.value = '' }, 1000)
+    })
+    card.addEventListener('touchcancel', (e) => {
+      debugInfo.value = 'touchcancel'
+      dragDrop.handleTouchEnd(e as TouchEvent)
+    })
   })
 }
 

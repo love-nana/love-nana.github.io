@@ -48,6 +48,20 @@ body {
     pointer-events: none;
 }
 
+.debug-badge {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #0f0;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: monospace;
+    z-index: 10000;
+    pointer-events: none;
+}
+
 /* 顶部丝带 */
 header {
     text-align: center;
