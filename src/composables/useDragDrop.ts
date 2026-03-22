@@ -94,7 +94,7 @@ export function useDragDrop(
   function handleTouchMove(e: TouchEvent) {
     if (!draggedElement.value || !currentDragElement.value) return
 
-    e.preventDefault()
+    // e.preventDefault()
 
     const touch = e.touches[0]
     const deltaX = touch.clientX - touchStartX.value
