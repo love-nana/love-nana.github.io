@@ -109,11 +109,7 @@
                          @dragover="dragDrop.handleDragOver"
                          @dragenter="editModal.handlePreviewDragEnter"
                          @dragleave="dragDrop.handleDragLeave"
-                         @drop="editModal.handlePreviewDrop($event, idx)"
-                         @touchstart="editModal.handleAppendPicTouchStart($event, idx)"
-                         @touchmove="editModal.handleAppendPicTouchMove"
-                         @touchend="editModal.handleAppendPicTouchEnd"
-                         @touchcancel="editModal.handleAppendPicTouchEnd">
+                         @drop="editModal.handlePreviewDrop($event, idx)">
                         <img :src="img.url" @error="handleImageError">
                         <button class="remove-btn" @click="editModal.removeEditImage(idx)">×</button>
                     </div>
@@ -263,6 +259,30 @@ function addImageCardMoveEvent() {
     card.addEventListener('touchcancel', (e) => {
       debugInfo.value = 'touchcancel'
       dragDrop.handleTouchEnd(e as TouchEvent)
+    })
+  })
+}
+
+// 编辑弹窗内预览图片的 touch 事件绑定
+function addPreviewItemMoveEvent() {
+  const previewItems = document.querySelectorAll('#editPreviewList .preview-item')
+  previewItems.forEach(item => {
+    item.addEventListener('touchstart', (e) => {
+      debugInfo.value = 'preview-touchstart'
+      editModal.handleAppendPicTouchStart(e as TouchEvent)
+    }, { passive: false })
+    item.addEventListener('touchmove', (e) => {
+      debugInfo.value = 'preview-touchmove'
+      editModal.handleAppendPicTouchMove(e as TouchEvent)
+    }, { passive: false })
+    item.addEventListener('touchend', (e) => {
+      debugInfo.value = 'preview-touchend'
+      editModal.handleAppendPicTouchEnd(e as TouchEvent)
+      setTimeout(() => { debugInfo.value = '' }, 1000)
+    })
+    item.addEventListener('touchcancel', (e) => {
+      debugInfo.value = 'preview-touchcancel'
+      editModal.handleAppendPicTouchEnd(e as TouchEvent)
     })
   })
 }
@@ -475,8 +495,10 @@ async function confirmUploadImages() {
 }
 
 // 编辑模态框
-function openEditModal(index: number) {
+async function openEditModal(index: number) {
   editModal.openEditModal(index, getPhotoUrls)
+  await nextTick()
+  addPreviewItemMoveEvent()
 }
 
 async function handleSubmitEdit() {

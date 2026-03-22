@@ -175,20 +175,16 @@ export function useEditModal(
   let draggedPreviewElement: HTMLElement | null = null
   let touchTimeout: any = null
 
-  function handleAppendPicTouchStart(e: TouchEvent, _index?: number) {
+  function handleAppendPicTouchStart(e: TouchEvent) {
+    // 清理历史状态
+    handleAppendPicTouchEnd(e)
+
     const target = e.target as HTMLElement
     if (target.classList.contains('remove-btn')) return
     e.preventDefault()
     e.stopPropagation()
 
-    // 支持事件委托：尝试从事件目标找到 .preview-item
-    let previewItem: HTMLElement
-    if (_index !== undefined) {
-      previewItem = e.currentTarget as HTMLElement
-    } else {
-      previewItem = target.closest('.preview-item') as HTMLElement
-      if (!previewItem) return
-    }
+    const previewItem = e.currentTarget as HTMLElement
 
     touchTimeout = setTimeout(() => {
       draggedPreviewElement = previewItem
