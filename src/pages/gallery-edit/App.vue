@@ -256,6 +256,15 @@ watch(
   { immediate: true }
 )
 
+// 监听 filteredImages 和 loadedCount 变化，更新 displayedImages
+watch(
+  [() => images.value, loadedCount],
+  () => {
+    displayedImages.value = filteredImages.value.slice(0, loadedCount.value)
+  },
+  { immediate: true, deep: true }
+)
+
 // 加载更多
 function loadMore() {
   if (!canLoadMore.value || isLoadingMore.value) return
