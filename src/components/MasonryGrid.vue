@@ -2,7 +2,7 @@
   <div class="masonry-wrapper">
     <MasonryGrid
       :columns="{ default: 4, 900: 3, 600: 2 }"
-      :gutter="8"
+      :gutter="4"
       class="masonry"
     >
       <div
