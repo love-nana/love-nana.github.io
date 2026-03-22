@@ -256,10 +256,10 @@ export function useEditModal(
     draggedPreviewElement = null
   }
 
-  function handleSwapAppendPic(target: HTMLElement, dragEle: HTMLElement, fromIndex: number, toIndex: number, imageData: { images?: string[], imageUrls?: string[] }) {
+  function handleSwapAppendPic(_target: HTMLElement, _dragEle: HTMLElement, fromIndex: number, toIndex: number, imageData: { images?: string[], imageUrls?: string[] }) {
     if (fromIndex === toIndex) return
 
-    // Swap in editImages array
+    // Swap in editImages array (Vue will auto re-render)
     ;[editImages.value[fromIndex], editImages.value[toIndex]] = [editImages.value[toIndex], editImages.value[fromIndex]]
 
     // Swap in image arrays (COS paths and signed URLs)
@@ -276,27 +276,6 @@ export function useEditModal(
       appendUploadFileMap.value.set(fromIndex, appendUploadFileMap.value.get(toIndex)!)
       appendUploadFileMap.value.set(toIndex, tmp!)
     }
-
-    // Update dataset.index
-    dragEle.dataset.index = String(toIndex)
-    target.dataset.index = String(fromIndex)
-
-    // Swap DOM elements
-    const editPreviewList = document.getElementById('editPreviewList')
-    if (editPreviewList) {
-      swapChildren(editPreviewList, fromIndex, toIndex)
-    }
-  }
-
-  function swapChildren(parent: HTMLElement, index1: number, index2: number) {
-    const children = parent.children
-    if (index1 < 0 || index2 < 0 || index1 >= children.length || index2 >= children.length) {
-      return
-    }
-    const node1 = children[index1]
-    const node2 = children[index2]
-    parent.insertBefore(node1, node2)
-    parent.insertBefore(node2, children[index1])
   }
 
   return {
