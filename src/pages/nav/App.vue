@@ -187,7 +187,7 @@ onMounted(() => {
 
 /* ===== 页面容器 ===== */
 .nav-page {
-  min-height: 100vh;
+  height: 100vh;
   background: var(--cream);
   position: relative;
   overflow: hidden;
@@ -232,19 +232,28 @@ onMounted(() => {
 .content {
   position: relative;
   z-index: 1;
-  max-width: 900px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 80px 20px 60px;
+  padding: 40px 20px 30px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 /* ===== 标题区 ===== */
 .hero {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .flourish-above {
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
 .flourish-svg {
@@ -257,7 +266,7 @@ onMounted(() => {
   padding: 6px 20px;
   border: 1px solid var(--gold);
   border-radius: 2px;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
   position: relative;
 }
 
@@ -287,7 +296,7 @@ onMounted(() => {
   font-size: clamp(2rem, 6vw, 3.2rem);
   font-weight: normal;
   color: var(--ink);
-  margin: 0 0 20px;
+  margin: 0 0 10px;
   letter-spacing: 8px;
   position: relative;
   display: inline-block;
@@ -309,7 +318,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 15px;
-  margin: 25px 0 35px;
+  margin: 10px 0 15px;
 }
 
 .subtitle-line {
@@ -334,8 +343,8 @@ onMounted(() => {
 
 .counter-ring {
   position: relative;
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
 }
 
 .ring-svg {
@@ -369,14 +378,14 @@ onMounted(() => {
 
 .counter-number {
   font-family: 'Georgia', serif;
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: var(--burgundy);
   line-height: 1;
 }
 
 .counter-label {
   font-family: 'Georgia', serif;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: var(--gold);
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -385,14 +394,16 @@ onMounted(() => {
 
 /* ===== 导航卡片区 ===== */
 .nav-section {
-  margin-bottom: 60px;
+  //flex-shrink: 0;
+  flex: 1;
+  margin-bottom: 0;
 }
 
 .cards-row {
   display: flex;
   justify-content: center;
-  gap: 30px;
-  flex-wrap: wrap;
+  gap: 20px;
+  flex-wrap: nowrap;
 }
 
 /* ===== 宝丽来风格卡片 ===== */
@@ -401,6 +412,9 @@ onMounted(() => {
   transform: rotate(var(--rotation, 0deg));
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
+  flex: 1;
+  max-width: 200px;
+  min-width: 0;
 }
 
 .polaroid:hover {
@@ -410,7 +424,7 @@ onMounted(() => {
 
 .polaroid-inner {
   background: #FAFAFA;
-  padding: 12px 12px 35px;
+  padding: 8px 8px 25px;
   box-shadow:
     0 2px 4px rgba(0,0,0,0.08),
     0 8px 16px rgba(0,0,0,0.08),
@@ -429,8 +443,8 @@ onMounted(() => {
 }
 
 .polaroid-image {
-  width: 160px;
-  height: 130px;
+  width: 100%;
+  height: 90px;
   background: var(--cream);
   display: flex;
   align-items: center;
@@ -446,8 +460,8 @@ onMounted(() => {
 }
 
 .letter-icon, .cam-icon, .pencil-icon {
-  width: 80px;
-  height: 60px;
+  width: 50px;
+  height: 38px;
 }
 
 .polaroid-caption {
@@ -458,7 +472,7 @@ onMounted(() => {
 .caption-title {
   display: block;
   font-family: 'Georgia', 'Times New Roman', serif;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: var(--ink);
   margin-bottom: 4px;
 }
@@ -466,7 +480,7 @@ onMounted(() => {
 .caption-sub {
   display: block;
   font-family: 'Georgia', serif;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: var(--gold);
   letter-spacing: 2px;
   font-style: italic;
@@ -491,14 +505,18 @@ onMounted(() => {
 
 /* ===== 底部印章 ===== */
 .footer-stamp {
-  text-align: center;
-  margin-top: 40px;
+  flex-shrink: 0;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
 }
 
 .stamp-ring {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 15px;
+  width: 50px;
+  height: 50px;
+  margin: 0;
   opacity: 0.7;
   transform: rotate(-15deg);
   animation: stampFloat 4s ease-in-out infinite;
@@ -530,7 +548,7 @@ onMounted(() => {
 
 .footer-quote {
   font-family: 'Georgia', serif;
-  font-size: 13px;
+  font-size: 11px;
   color: var(--burgundy);
   letter-spacing: 4px;
   font-style: italic;
@@ -602,34 +620,32 @@ onMounted(() => {
 /* ===== 响应式 ===== */
 @media (max-width: 768px) {
   .content {
-    padding: 60px 15px 40px;
+    padding: 30px 15px 20px;
   }
 
   .cards-row {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 15px;
-    padding-bottom: 10px;
-    scrollbar-width: thin;
+    gap: 10px;
   }
 
   .polaroid {
-    flex-shrink: 0;
-    min-width: 130px;
+    max-width: 150px;
   }
 
   .polaroid-image {
-    width: 140px;
-    height: 110px;
+    height: 70px;
   }
 
   .counter-ring {
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
   }
 
   .counter-number {
-    font-size: 2rem;
+    font-size: 1.6rem;
+  }
+
+  .title {
+    letter-spacing: 4px;
   }
 }
 </style>
