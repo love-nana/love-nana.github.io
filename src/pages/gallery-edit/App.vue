@@ -183,7 +183,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useCos } from '@/composables/useCos'
 import { useDragDrop } from '@/composables/useDragDrop'
 import { useImageUpload } from '@/composables/useImageUpload'
@@ -241,15 +241,19 @@ watch(currentCategoryFilter, () => {
   loadedCount.value = perPage
 })
 
-// 监听 filteredImages 和 loadedCount 变化，更新 displayedImages
+// 监听 displayedImages 变化，在 DOM 更新后直接绑定 touch 事件到每个 .image-card
 watch(
-  [() => images.value, loadedCount],
-  () => {
-    console.log('[App] watch triggered, images length:', images.value.length)
-    displayedImages.value = filteredImages.value.slice(0, loadedCount.value)
-    console.log('[App] displayedImages updated, length:', displayedImages.value.length)
+  displayedImages,
+  async () => {
+    await nextTick()
+    document.querySelectorAll('.image-card').forEach(card => {
+      card.addEventListener('touchstart', (e) => dragDrop.handleTouchStart(e as TouchEvent), { passive: false })
+      card.addEventListener('touchmove', (e) => dragDrop.handleTouchMove(e as TouchEvent), { passive: false })
+      card.addEventListener('touchend', (e) => dragDrop.handleTouchEnd(e as TouchEvent))
+      card.addEventListener('touchcancel', (e) => dragDrop.handleTouchEnd(e as TouchEvent))
+    })
   },
-  { immediate: true, deep: true }
+  { immediate: true }
 )
 
 // 加载更多
@@ -294,43 +298,6 @@ onMounted(() => {
 
   scrollHandler = handleScroll
   window.addEventListener('scroll', scrollHandler, { passive: true })
-
-  // 使用事件委托添加 touch 事件监听器（兼容鸿蒙微信）
-  // 通过 addEventListener 直接绑定，绕过 Vue 模板事件系统
-
-  // 主画廊区域的卡片拖拽
-  const gallery = document.getElementById('imageGallery')
-  if (gallery) {
-    gallery.addEventListener('touchstart', (e) => {
-      dragDrop.handleTouchStart(e as TouchEvent)
-    }, { passive: false })
-    gallery.addEventListener('touchmove', (e) => {
-      dragDrop.handleTouchMove(e as TouchEvent)
-    }, { passive: false })
-    gallery.addEventListener('touchend', (e) => {
-      dragDrop.handleTouchEnd(e as TouchEvent)
-    })
-    gallery.addEventListener('touchcancel', (e) => {
-      dragDrop.handleTouchEnd(e as TouchEvent)
-    })
-  }
-
-  // 编辑弹窗内的预览图片拖拽
-  const modalContent = document.getElementById('modalContent')
-  if (modalContent) {
-    modalContent.addEventListener('touchstart', (e) => {
-      editModal.handleAppendPicTouchStart(e as TouchEvent)
-    }, { passive: false })
-    modalContent.addEventListener('touchmove', (e) => {
-      editModal.handleAppendPicTouchMove(e as TouchEvent)
-    }, { passive: false })
-    modalContent.addEventListener('touchend', (e) => {
-      editModal.handleAppendPicTouchEnd(e as TouchEvent)
-    })
-    modalContent.addEventListener('touchcancel', (e) => {
-      editModal.handleAppendPicTouchEnd(e as TouchEvent)
-    })
-  }
 })
 
 onUnmounted(() => {
