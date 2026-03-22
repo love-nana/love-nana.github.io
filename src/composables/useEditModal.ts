@@ -201,9 +201,9 @@ export function useEditModal(
   }
 
   function handleAppendPicTouchMove(e: TouchEvent) {
+    if (!draggedPreviewElement) return
     e.preventDefault()
     e.stopPropagation()
-    if (!draggedPreviewElement) return
     const touch = e.touches[0]
     const deltaX = touch.clientX - touchStartX
     const deltaY = touch.clientY - touchStartY
