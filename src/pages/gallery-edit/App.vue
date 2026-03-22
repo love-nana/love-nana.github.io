@@ -108,7 +108,11 @@
                          @dragover="dragDrop.handleDragOver"
                          @dragenter="editModal.handlePreviewDragEnter"
                          @dragleave="dragDrop.handleDragLeave"
-                         @drop="editModal.handlePreviewDrop($event, idx)">
+                         @drop="editModal.handlePreviewDrop($event, idx)"
+                         @touchstart="editModal.handleAppendPicTouchStart($event, idx)"
+                         @touchmove="editModal.handleAppendPicTouchMove"
+                         @touchend="editModal.handleAppendPicTouchEnd"
+                         @touchcancel="editModal.handleAppendPicTouchEnd">
                         <img :src="img.url" @error="handleImageError">
                         <button class="remove-btn" @click="editModal.removeEditImage(idx)">×</button>
                     </div>
@@ -233,11 +237,13 @@ watch(currentCategoryFilter, () => {
 
 // 监听 filteredImages 和 loadedCount 变化，更新 displayedImages
 watch(
-  [filteredImages, loadedCount],
+  [() => images.value, loadedCount],
   () => {
+    console.log('[App] watch triggered, images length:', images.value.length)
     displayedImages.value = filteredImages.value.slice(0, loadedCount.value)
+    console.log('[App] displayedImages updated, length:', displayedImages.value.length)
   },
-  { immediate: true }
+  { immediate: true, deep: true }
 )
 
 // 加载更多
@@ -270,6 +276,7 @@ function handleScroll() {
 onMounted(() => {
   initResize()
   loadHeaderBg()
+  initDatePicker()
 
   if (authStore.isLoggedIn) {
     loadPhotos()
@@ -287,7 +294,45 @@ onUnmounted(() => {
   if (scrollHandler) {
     window.removeEventListener('scroll', scrollHandler)
   }
+  if (datePicker) {
+    datePicker.destroy()
+  }
 })
+
+// Pikaday 日期选择器
+let datePicker: any = null
+
+function parseDate(date: Date) {
+  // 获取年月日
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1); // 月份从0开始，需要+1
+  const day = String(date.getDate());
+  // 格式化为 YYYY-MM-DD
+  const dateString = `${year}.${month}.${day}`;
+  return dateString;
+}
+
+
+function initDatePicker() {
+  const dateInput = document.getElementById('imageDate')
+  if (!dateInput || !(window as any).Pikaday) return
+
+  datePicker = new (window as any).Pikaday({
+    field: dateInput,
+    format: 'YYYY-MM-DD',
+    i18n: {
+      previousMonth: '上一月',
+      nextMonth: '下一月',
+      months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+      weekdays: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+      weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+    },
+    onSelect: function (vDate: Date) {
+      // 当选择日期时更新显示
+      ;(dateInput as HTMLInputElement).value = parseDate(vDate);
+    }
+  })
+}
 
 function initResize() {
   const handle = document.getElementById('resize-handle')
@@ -439,7 +484,16 @@ async function handleSaveEdit(index: number, _form: any, editImages: any[]): Pro
 
 // 拖拽重排
 function handleReorder(fromIndex: number, toIndex: number) {
-  ;[images.value[fromIndex], images.value[toIndex]] = [images.value[toIndex], images.value[fromIndex]]
+  console.log('[App] handleReorder', { fromIndex, toIndex })
+  console.log('[App] before swap, images[0].id:', images.value[0]?.id, 'images[1].id:', images.value[1]?.id)
+  // 使用 splice 强制触发 Vue 响应式更新
+  const item = images.value.splice(fromIndex, 1)[0]
+  images.value.splice(toIndex, 0, item)
+  console.log('[App] after splice swap, images[0].id:', images.value[0]?.id, 'images[1].id:', images.value[1]?.id)
+  console.log('[App] after splice swap, images length:', images.value.length)
+  // 直接更新 displayedImages
+  displayedImages.value = filteredImages.value.slice(0, loadedCount.value)
+  console.log('[App] directly updated displayedImages')
   saveChanges()
 }
 
@@ -511,6 +565,7 @@ async function loadPhotos() {
 }
 
 async function saveChanges(): Promise<void> {
+  console.log('[App] saveChanges called')
   const saveObj = JSON.parse(JSON.stringify({ list: images.value }))
   saveObj.list.forEach((image: any) => {
     image.imageUrl = null
@@ -521,8 +576,10 @@ async function saveChanges(): Promise<void> {
       image.image = null
     }
   })
+  console.log('[App] saving to foodData.json, list length:', saveObj.list.length)
 
   await uploadJson('foodData.json', saveObj)
+  console.log('[App] saveChanges completed')
 }
 
 // 工具函数

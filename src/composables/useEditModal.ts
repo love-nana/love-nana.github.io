@@ -54,7 +54,6 @@ export function useEditModal(
       const modal = document.getElementById('editModal')
       if (modal) modal.classList.add('active')
       document.body.style.overflow = 'hidden'
-      openDatePicker()
     })
   }
 
@@ -66,18 +65,6 @@ export function useEditModal(
     editingIndex.value = -1
     editImages.value = []
     appendUploadFileMap.value = new Map()
-  }
-
-  function openDatePicker(): void {
-    const dateInput = document.getElementById('imageDate') as HTMLInputElement
-    if (!dateInput) return
-
-    dateInput.addEventListener('click', () => {
-      const dateStr = prompt('请输入日期 (格式: YYYY-MM-DD):', editForm.date)
-      if (dateStr && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-        editForm.date = dateStr
-      }
-    })
   }
 
   async function submitEdit(): Promise<void> {
@@ -158,8 +145,18 @@ export function useEditModal(
   function handlePreviewDrop(e: DragEvent, targetIndex: number) {
     e.stopPropagation()
     if (previewDraggedIndex !== targetIndex) {
+      const imageData = images.value[editingIndex.value]
+
       // Swap edit images
       ;[editImages.value[previewDraggedIndex], editImages.value[targetIndex]] = [editImages.value[targetIndex], editImages.value[previewDraggedIndex]]
+
+      // Swap in image arrays (COS paths and signed URLs)
+      if (imageData.images) {
+        ;[imageData.images[previewDraggedIndex], imageData.images[targetIndex]] = [imageData.images[targetIndex], imageData.images[previewDraggedIndex]]
+      }
+      if (imageData.imageUrls) {
+        ;[imageData.imageUrls[previewDraggedIndex], imageData.imageUrls[targetIndex]] = [imageData.imageUrls[targetIndex], imageData.imageUrls[previewDraggedIndex]]
+      }
 
       // Swap in append map
       if (appendUploadFileMap.value.has(previewDraggedIndex) || appendUploadFileMap.value.has(targetIndex)) {
@@ -170,6 +167,129 @@ export function useEditModal(
     }
     previewDraggedIndex = -1
     return false
+  }
+
+  // Touch drag state for preview images
+  let touchStartX = 0
+  let touchStartY = 0
+  let draggedPreviewElement: HTMLElement | null = null
+  let touchTimeout: any = null
+
+  function handleAppendPicTouchStart(e: TouchEvent, _index: number) {
+    const target = e.target as HTMLElement
+    if (target.classList.contains('remove-btn')) return
+    e.preventDefault()
+    e.stopPropagation()
+    touchTimeout = setTimeout(() => {
+      draggedPreviewElement = e.currentTarget as HTMLElement
+      const touch = e.touches[0]
+      touchStartX = touch.clientX
+      touchStartY = touch.clientY
+      ;(e.currentTarget as HTMLElement).classList.add('dragging')
+      document.getElementById('modalContent')!.style.overflow = 'hidden'
+    }, 100)
+  }
+
+  function handleAppendPicTouchMove(e: TouchEvent) {
+    if (!draggedPreviewElement) return
+    e.preventDefault()
+    e.stopPropagation()
+    const touch = e.touches[0]
+    const deltaX = touch.clientX - touchStartX
+    const deltaY = touch.clientY - touchStartY
+    draggedPreviewElement.style.transform = `translate(${deltaX}px, ${deltaY}px)`
+  }
+
+  function handleAppendPicTouchEnd(e: TouchEvent) {
+    if (touchTimeout) {
+      clearTimeout(touchTimeout)
+    }
+    if (!draggedPreviewElement) return
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Collision detection
+    const elements = Array.from(document.querySelectorAll('#editPreviewList .preview-item:not(.dragging)'))
+    const draggedRect = draggedPreviewElement.getBoundingClientRect()
+    let swapElement: HTMLElement | null = null
+
+    for (const element of elements) {
+      const rect = element.getBoundingClientRect()
+      if (
+        draggedRect.left < rect.right &&
+        draggedRect.right > rect.left &&
+        draggedRect.top < rect.bottom &&
+        draggedRect.bottom > rect.top
+      ) {
+        const centerX1 = (draggedRect.left + draggedRect.right) / 2
+        const centerY1 = (draggedRect.top + draggedRect.bottom) / 2
+        const centerX2 = (rect.left + rect.right) / 2
+        const centerY2 = (rect.top + rect.bottom) / 2
+
+        if (Math.abs(centerX1 - centerX2) < 50 && Math.abs(centerY1 - centerY2) < 50) {
+          swapElement = element as HTMLElement
+          break
+        }
+      }
+    }
+
+    if (swapElement && swapElement !== draggedPreviewElement) {
+      const fromIndex = parseInt(draggedPreviewElement.dataset.index || '-1')
+      const toIndex = parseInt(swapElement.dataset.index || '-1')
+      const imageData = images.value[editingIndex.value]
+      handleSwapAppendPic(swapElement, draggedPreviewElement, fromIndex, toIndex, imageData)
+    }
+
+    document.querySelectorAll('#editPreviewList .preview-item').forEach(card => {
+      ;(card as HTMLElement).classList.remove('dragging')
+    })
+    draggedPreviewElement.style.transform = ''
+    draggedPreviewElement.classList.remove('dragging')
+    document.getElementById('modalContent')!.style.overflow = ''
+    draggedPreviewElement = null
+  }
+
+  function handleSwapAppendPic(target: HTMLElement, dragEle: HTMLElement, fromIndex: number, toIndex: number, imageData: { images?: string[], imageUrls?: string[] }) {
+    if (fromIndex === toIndex) return
+
+    // Swap in editImages array
+    ;[editImages.value[fromIndex], editImages.value[toIndex]] = [editImages.value[toIndex], editImages.value[fromIndex]]
+
+    // Swap in image arrays (COS paths and signed URLs)
+    if (imageData.images) {
+      ;[imageData.images[fromIndex], imageData.images[toIndex]] = [imageData.images[toIndex], imageData.images[fromIndex]]
+    }
+    if (imageData.imageUrls) {
+      ;[imageData.imageUrls[fromIndex], imageData.imageUrls[toIndex]] = [imageData.imageUrls[toIndex], imageData.imageUrls[fromIndex]]
+    }
+
+    // Swap in appendUploadFileMap
+    if (appendUploadFileMap.value.has(fromIndex) || appendUploadFileMap.value.has(toIndex)) {
+      const tmp = appendUploadFileMap.value.get(fromIndex)
+      appendUploadFileMap.value.set(fromIndex, appendUploadFileMap.value.get(toIndex)!)
+      appendUploadFileMap.value.set(toIndex, tmp!)
+    }
+
+    // Update dataset.index
+    dragEle.dataset.index = String(toIndex)
+    target.dataset.index = String(fromIndex)
+
+    // Swap DOM elements
+    const editPreviewList = document.getElementById('editPreviewList')
+    if (editPreviewList) {
+      swapChildren(editPreviewList, fromIndex, toIndex)
+    }
+  }
+
+  function swapChildren(parent: HTMLElement, index1: number, index2: number) {
+    const children = parent.children
+    if (index1 < 0 || index2 < 0 || index1 >= children.length || index2 >= children.length) {
+      return
+    }
+    const node1 = children[index1]
+    const node2 = children[index2]
+    parent.insertBefore(node1, node2)
+    parent.insertBefore(node2, children[index1])
   }
 
   return {
@@ -189,5 +309,8 @@ export function useEditModal(
     handlePreviewDragEnd,
     handlePreviewDragEnter,
     handlePreviewDrop,
+    handleAppendPicTouchStart,
+    handleAppendPicTouchMove,
+    handleAppendPicTouchEnd,
   }
 }

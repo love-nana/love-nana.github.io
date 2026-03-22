@@ -32,68 +32,20 @@
         </div>
       </div>
     </MasonryGrid>
-
-    <!-- 加载遮罩 -->
-    <Transition name="fade">
-      <div v-if="isReloading || isReloadingFilter || !isLayoutReady" class="loading-overlay">
-        <div class="loading-spinner"></div>
-      </div>
-    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from 'vue'
 import { MasonryGrid } from 'vue3-masonry-css'
 import type { Photo } from '@/types'
 
-const props = defineProps<{
+defineProps<{
   photos: Photo[]
-  isReloading?: boolean
-  reloadKey?: number
 }>()
 
 defineEmits<{
   (e: 'select', photo: Photo): void
 }>()
-
-const isLayoutReady = ref(false)
-const isReloadingFilter = ref(false)
-
-onMounted(() => {
-  nextTick(() => {
-    isLayoutReady.value = true
-  })
-})
-
-watch(() => props.photos, async () => {
-  if (isLayoutReady.value) {
-    isReloadingFilter.value = true
-  }
-  await nextTick()
-  setTimeout(() => {
-    isReloadingFilter.value = false
-  }, 500)
-}, { deep: true })
-
-watch(() => props.reloadKey, () => {
-  if (isLayoutReady.value) {
-    isReloadingFilter.value = true
-  }
-  nextTick(() => {
-    setTimeout(() => {
-      isReloadingFilter.value = false
-    }, 500)
-  })
-})
-
-watch(() => props.isReloading, (newVal) => {
-  if (newVal) {
-    isReloadingFilter.value = true
-  } else {
-    isReloadingFilter.value = false
-  }
-})
 </script>
 
 <style scoped>
@@ -182,45 +134,5 @@ watch(() => props.isReloading, (newVal) => {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: Georgia, serif;
-}
-
-/* 加载遮罩 */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(248, 249, 250, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  border-radius: 8px;
-}
-
-.loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(201, 169, 110, 0.2);
-  border-top-color: #C9A96E;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* 淡入淡出过渡 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.25s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

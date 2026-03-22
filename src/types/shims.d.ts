@@ -38,6 +38,31 @@ declare module '*.svg' {
   export default content
 }
 
+declare module 'pikaday' {
+  interface PikadayOptions {
+    field?: HTMLElement
+    format?: string
+    i18n?: {
+      previousMonth?: string
+      nextMonth?: string
+      months?: string[]
+      weekdays?: string[]
+      weekdaysShort?: string[]
+    }
+    onSelect?: (date: Date) => void
+  }
+
+  class Pikaday {
+    constructor(options: PikadayOptions)
+    toString(): string
+    getDate(): Date
+    setDate(date: string): void
+    destroy(): void
+  }
+
+  export default Pikaday
+}
+
 declare module 'cos-js-sdk-v5' {
   export interface CosCredentials {
     SecretId: string

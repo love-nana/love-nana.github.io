@@ -12,7 +12,6 @@
     <div v-if="galleryStore.displayedPhotos.length > 0" class="gallery-content">
       <MasonryGrid
         :photos="galleryStore.displayedPhotos"
-        :is-reloading="isReloading"
         :reload-key="reloadKey"
         @select="showDetail"
       />
@@ -67,19 +66,13 @@ const { loadPhotos, getPhotoUrls } = useCos()
 
 const showLogin = ref(false)
 const isLoadingMore = ref(false)
-const isReloading = ref(false)
 const reloadKey = ref(0)
 let scrollHandler: (() => void) | null = null
 
-// 分类切换时立即显示遮罩
+// 分类切换
 function onCategoryChange(category: Category) {
-  isReloading.value = true
   galleryStore.setCategory(category)
   reloadKey.value++
-  // 1秒后关闭遮罩
-  setTimeout(() => {
-    isReloading.value = false
-  }, 1000)
 }
 
 // 加载照片
@@ -123,13 +116,11 @@ async function loadMore() {
   if (isLoadingMore.value || !galleryStore.canLoadMore) return
 
   isLoadingMore.value = true
-  isReloading.value = true
   galleryStore.loadMore()
 
   // 模拟短暂延迟以显示加载动画
   setTimeout(() => {
     isLoadingMore.value = false
-    isReloading.value = false
   }, 300)
 }
 
