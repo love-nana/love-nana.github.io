@@ -173,7 +173,6 @@ export function useEditModal(
   let touchStartX = 0
   let touchStartY = 0
   let draggedPreviewElement: HTMLElement | null = null
-  let touchTimeout: any = null
 
   function handleAppendPicTouchStart(e: TouchEvent) {
     // 清理历史状态
@@ -185,15 +184,13 @@ export function useEditModal(
     e.stopPropagation()
 
     const previewItem = e.currentTarget as HTMLElement
-
-    touchTimeout = setTimeout(() => {
-      draggedPreviewElement = previewItem
-      const touch = e.touches[0]
-      touchStartX = touch.clientX
-      touchStartY = touch.clientY
-      previewItem.classList.add('dragging')
-      document.getElementById('modalContent')!.style.overflow = 'hidden'
-    }, 100)
+    // 立即设置 draggedPreviewElement（移除延迟）
+    draggedPreviewElement = previewItem
+    const touch = e.touches[0]
+    touchStartX = touch.clientX
+    touchStartY = touch.clientY
+    previewItem.classList.add('dragging')
+    document.getElementById('modalContent')!.style.overflow = 'hidden'
   }
 
   function handleAppendPicTouchMove(e: TouchEvent) {
@@ -207,15 +204,17 @@ export function useEditModal(
   }
 
   function handleAppendPicTouchEnd(e: TouchEvent) {
-    if (touchTimeout) {
-      clearTimeout(touchTimeout)
+    if (!draggedPreviewElement) {
+      console.log('[handleAppendPicTouchEnd] draggedPreviewElement is null')
+      return
     }
-    if (!draggedPreviewElement) return
     e.preventDefault()
     e.stopPropagation()
+    console.log('[handleAppendPicTouchEnd] draggedPreviewElement exists:', draggedPreviewElement)
 
     // Collision detection
     const elements = Array.from(document.querySelectorAll('#editPreviewList .preview-item:not(.dragging)'))
+    console.log('[handleAppendPicTouchEnd] elements count:', elements.length)
     const draggedRect = draggedPreviewElement.getBoundingClientRect()
     let swapElement: HTMLElement | null = null
 
@@ -238,6 +237,8 @@ export function useEditModal(
         }
       }
     }
+
+    console.log('[handleAppendPicTouchEnd] swapElement:', swapElement)
 
     if (swapElement && swapElement !== draggedPreviewElement) {
       const fromIndex = parseInt(draggedPreviewElement.dataset.index || '-1')
