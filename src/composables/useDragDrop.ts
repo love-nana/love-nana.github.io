@@ -72,6 +72,9 @@ export function useDragDrop(
 
   // Touch events for mobile reordering
   function handleTouchStart(e: TouchEvent) {
+    // 清理历史状态
+    handleTouchEnd(e)
+
     const target = e.target as HTMLElement
     if (target.classList.contains('action-btn')) return
 
