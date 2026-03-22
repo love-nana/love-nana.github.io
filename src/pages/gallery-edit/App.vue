@@ -48,9 +48,6 @@
              @dragenter="dragDrop.handleDragEnter"
              @dragleave="dragDrop.handleDragLeave"
              @drop="dragDrop.handleCardDrop($event, image, idx)"
-             @touchstart="dragDrop.handleTouchStart($event, image, idx)"
-             @touchmove="dragDrop.handleTouchMove($event)"
-             @touchend="dragDrop.handleTouchEnd"
              @click.stop="showDetail(image)">
             <div class="image-container" @click.stop="showDetail(image)">
                 <img :src="image.imageUrl" :alt="image.title" class="img-style" @error="handleImageError">
@@ -241,17 +238,23 @@ watch(currentCategoryFilter, () => {
   loadedCount.value = perPage
 })
 
-// 监听 displayedImages 变化，在 DOM 更新后直接绑定 touch 事件到每个 .image-card
+// 直接在每个 .image-card 元素上绑定 touch 事件（参考 gallery-edit.js）
+function addImageCardMoveEvent() {
+  const cards = document.querySelectorAll('.image-card')
+  cards.forEach(card => {
+    card.addEventListener('touchstart', (e) => dragDrop.handleTouchStart(e as TouchEvent), { passive: false })
+    card.addEventListener('touchmove', (e) => dragDrop.handleTouchMove(e as TouchEvent), { passive: false })
+    card.addEventListener('touchend', (e) => dragDrop.handleTouchEnd(e as TouchEvent))
+    card.addEventListener('touchcancel', (e) => dragDrop.handleTouchEnd(e as TouchEvent))
+  })
+}
+
+// 监听 displayedImages 变化，DOM 更新后绑定 touch 事件
 watch(
   displayedImages,
   async () => {
     await nextTick()
-    document.querySelectorAll('.image-card').forEach(card => {
-      card.addEventListener('touchstart', (e) => dragDrop.handleTouchStart(e as TouchEvent), { passive: false })
-      card.addEventListener('touchmove', (e) => dragDrop.handleTouchMove(e as TouchEvent), { passive: false })
-      card.addEventListener('touchend', (e) => dragDrop.handleTouchEnd(e as TouchEvent))
-      card.addEventListener('touchcancel', (e) => dragDrop.handleTouchEnd(e as TouchEvent))
-    })
+    addImageCardMoveEvent()
   },
   { immediate: true }
 )
