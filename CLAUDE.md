@@ -162,6 +162,20 @@ interface CategoryConfig {
 - **逻辑拆分 composables**：useDragDrop（拖拽排序）、useImageUpload（图片上传）、useEditModal（编辑弹窗）
 - **组件复用**：登录弹窗复用 `CosLoginModal` 组件，通知复用 `NotificationContainer` 组件
 
+### 拖拽排序实现
+
+gallery-edit 页面的卡片拖拽排序功能支持移动端和桌面端：
+
+**桌面端**：使用原生 HTML5 Drag & Drop API（`dragstart`、`dragover`、`drop` 等事件）
+
+**移动端**：使用 Touch Events API，直接在每个 `.image-card` 和 `.preview-item` 元素上通过 `addEventListener` 绑定事件（不使用 Vue 模板绑定），以兼容鸿蒙微信等特殊浏览器：
+
+- 使用 `watch` + `nextTick` 在 DOM 更新后绑定 touch 事件
+- `handleTouchStart` 开头调用 `handleTouchEnd` 清理历史状态
+- 编辑弹窗内预览图片的拖拽使用 `watch(() => editModal.editImages.value.length)` 监听异步数据加载完成后再绑定事件
+- 碰撞检测使用边界重叠 + 中心点距离判断（阈值 50px）
+- 视觉交换依赖 Vue 响应式更新（数组交换后 Vue 自动重新渲染 DOM），不手动操作 DOM
+
 ## 构建流程
 
 Vite 配置包含两个自定义插件：
@@ -220,4 +234,4 @@ npx tsx scripts/count-gallery-cards.ts
 - **分类筛选**: 客户端筛选，由 `gallery` Pinia store 管理
 - **瀑布流布局**: vue3-masonry-css 组件（CSS columns），响应式列数（桌面4列、平板3列、手机2列）
 - **多图支持**: Photo 的 `images` 数组字段支持多张图片
-- **拖拽排序**: gallery-edit 页面支持拖拽卡片交换位置，使用 `useDragDrop` composable 实现。拖拽事件处理使用 `closest('.image-card')` 确保正确识别目标卡片。数组交换使用 `splice` 方法以确保 Vue 响应式更新。
+- **拖拽排序**: gallery-edit 页面支持拖拽卡片交换位置，使用 `useDragDrop` composable 实现。桌面端使用 HTML5 Drag & Drop API，移动端使用 Touch Events API（通过原生 `addEventListener` 绑定，参考 `gallery-edit.js` 原生实现）。数组交换使用 `splice` 方法以确保 Vue 响应式更新。

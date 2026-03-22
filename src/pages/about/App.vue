@@ -490,6 +490,7 @@
 import { ref, computed, onMounted, nextTick } from 'vue'
 import Chart from 'chart.js/auto'
 import html2canvas from 'html2canvas'
+import { dayTouch, dayRan } from '@/utils/date'
 import dogeIcon from '../../assets/imgs/doge.png'
 import smileIcon from '../../assets/imgs/smile.png'
 import emmIcon from '../../assets/imgs/emoji_emm.png'
@@ -501,16 +502,10 @@ const showModal = ref(false)
 const modalImage = ref('')
 
 // 计算天数
-const calculatedDays = computed(() => {
-  const meetDate = new Date('2025-06-19')
-  const startDate = new Date('2025-08-03')
-  const today = new Date()
-
-  const touchDays = Math.floor((today.getTime() - meetDate.getTime()) / (1000 * 60 * 60 * 24))
-  const ranDays = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
-
-  return { touch: touchDays, ran: ranDays }
-})
+const calculatedDays = computed(() => ({
+  touch: dayTouch(),
+  ran: dayRan()
+}))
 
 const currentDate = computed(() => {
   return new Date().toLocaleDateString('zh-CN')

@@ -606,7 +606,16 @@ onMounted(() => {
   }
 
   .cards-row {
-    gap: 40px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 15px;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+  }
+
+  .polaroid {
+    flex-shrink: 0;
+    min-width: 130px;
   }
 
   .polaroid-image {
