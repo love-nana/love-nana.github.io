@@ -49,7 +49,6 @@
              @dragleave="dragDrop.handleDragLeave"
              @drop="dragDrop.handleCardDrop($event, image, idx)"
              @touchstart="dragDrop.handleTouchStart($event, image, idx)"
-             @touchmove="dragDrop.handleTouchMove($event)"
              @touchend="dragDrop.handleTouchEnd"
              @click.stop="showDetail(image)">
             <div class="image-container" @click.stop="showDetail(image)">
@@ -112,7 +111,6 @@
                          @dragleave="dragDrop.handleDragLeave"
                          @drop="editModal.handlePreviewDrop($event, idx)"
                          @touchstart="editModal.handleAppendPicTouchStart($event, idx)"
-                         @touchmove="editModal.handleAppendPicTouchMove"
                          @touchend="editModal.handleAppendPicTouchEnd"
                          @touchcancel="editModal.handleAppendPicTouchEnd">
                         <img :src="img.url" @error="handleImageError">

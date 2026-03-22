@@ -187,6 +187,8 @@ export function useEditModal(
       touchStartY = touch.clientY
       ;(e.currentTarget as HTMLElement).classList.add('dragging')
       document.getElementById('modalContent')!.style.overflow = 'hidden'
+      // 添加非 passive 的 touchmove 监听器，确保 preventDefault 生效
+      document.addEventListener('touchmove', handleAppendPicTouchMove, { passive: false })
     }, 100)
   }
 
@@ -246,6 +248,8 @@ export function useEditModal(
     draggedPreviewElement.style.transform = ''
     draggedPreviewElement.classList.remove('dragging')
     document.getElementById('modalContent')!.style.overflow = ''
+    // 移除非 passive 的 touchmove 监听器
+    document.removeEventListener('touchmove', handleAppendPicTouchMove)
     draggedPreviewElement = null
   }
 

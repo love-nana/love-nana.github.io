@@ -82,6 +82,8 @@ export function useDragDrop(
       touchStartY.value = touch.clientY
       ;(e.currentTarget as HTMLElement).classList.add('dragging')
       document.body.style.overflow = 'hidden'
+      // 添加非 passive 的 touchmove 监听器，确保 preventDefault 生效
+      document.addEventListener('touchmove', handleTouchMove, { passive: false })
     }, 1000)
   }
 
@@ -144,6 +146,8 @@ export function useDragDrop(
       currentDragElement.value.classList.remove('dragging')
     }
     document.body.style.overflow = ''
+    // 移除非 passive 的 touchmove 监听器
+    document.removeEventListener('touchmove', handleTouchMove)
     draggedElement.value = null
     currentDragElement.value = null
     dragStartIndex.value = -1
