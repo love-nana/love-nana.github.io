@@ -71,16 +71,38 @@ export function useDragDrop(
   }
 
   // Touch events for mobile reordering
-  function handleTouchStart(e: TouchEvent, image: any, index: number) {
-    if ((e.target as HTMLElement).classList.contains('action-btn')) return
+  function handleTouchStart(e: TouchEvent, image?: any, index?: number) {
+    const target = e.target as HTMLElement
+    if (target.classList.contains('action-btn')) return
+
+    // 支持两种调用方式：
+    // 1. Vue 模板绑定：handleTouchStart($event, image, idx)
+    // 2. 事件委托：handleTouchStart(event) - 从元素上获取数据
+    let card: HTMLElement
+    let img: any
+    let idx: number
+
+    if (image && index !== undefined) {
+      // Vue 模板调用方式
+      card = e.currentTarget as HTMLElement
+      img = image
+      idx = index
+    } else {
+      // 事件委托调用方式
+      card = target.closest('.image-card') as HTMLElement
+      if (!card) return
+      img = items.value[parseInt(card.dataset.index || '-1')]
+      idx = parseInt(card.dataset.index || '-1')
+    }
+
     touchTimeout = setTimeout(() => {
-      draggedElement.value = image
-      currentDragElement.value = e.currentTarget as HTMLElement
-      dragStartIndex.value = index
+      draggedElement.value = img
+      currentDragElement.value = card
+      dragStartIndex.value = idx
       const touch = e.touches[0]
       touchStartX.value = touch.clientX
       touchStartY.value = touch.clientY
-      ;(e.currentTarget as HTMLElement).classList.add('dragging')
+      card.classList.add('dragging')
       document.body.style.overflow = 'hidden'
     }, 1000)
   }
