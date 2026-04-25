@@ -378,8 +378,10 @@ function initDatePicker() {
       weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
     },
     onSelect: function (vDate: Date) {
-      // 当选择日期时更新显示
+      // 更新 DOM 显示
       ;(dateInput as HTMLInputElement).value = parseDate(vDate);
+      // 同步更新 Vue 响应式数据（修复 bug）
+      editModal.editForm.date = parseDate(vDate);
     }
   })
 }
